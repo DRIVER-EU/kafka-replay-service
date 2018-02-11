@@ -44,6 +44,6 @@
     "@types/node": "^9.3.0",
     "@types/socket.io": "^1.4.31",
     "@types/xml2json": "^0.10.0",
-    "typescript": "^2.7.1"
+    "typescript": "^2.8.0-dev.20180211"
   }
 }
