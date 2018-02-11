@@ -14,8 +14,12 @@ GET /api/v1/:SESSION_NAME/
 POST /api/v1/:SESSION_NAME/
 Body { action: PLAY | PAUSE | STOP }
 
+- To play, pause (if timed) and stop (if timed) a whole topic session
+POST /api/v1/:SESSION_NAME/:TOPIC_NAME
+Body { action: PLAY | PAUSE | STOP }
+
 - To play (send) a particular message
-POST /api/v1/:SESSION_NAME/:ID
+POST /api/v1/:SESSION_NAME/:TOPIC_NAME/:ID
 Body { action: PLAY }
 
 Via websockets, your client may receive a `session_update` notification that something has changed, after which you should GET all session data again.

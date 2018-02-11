@@ -1,9 +1,10 @@
 import { FileWatcherService } from './services/file-watcher-service';
 import { ICommandOptions } from './';
 import { createServer, Server } from 'http';
-import { Application, Request, Response } from 'express';
+import { Application } from 'express';
 import * as express from 'express';
 import * as socketIO from 'socket.io';
+import { setupRoutes } from './routes/v1/api-router';
 
 const log = console.log;
 
@@ -26,7 +27,7 @@ export class App {
       // log(this.fws.getAllSessions().map(s => s.filename));
       // const f = this.fws.getAllSessions()[0].filename;
       // log(this.fws.getMessage(f));
-      this.setupRoutes();
+      setupRoutes(this.app);
       this.listen();
     });
     this.fws.setWatchFolder(options.logFolder);
@@ -55,9 +56,9 @@ export class App {
     });
   }
 
-  private setupRoutes() {
-    this.app.get('/', (req: Request, res: Response) => {
-      res.sendFile(process.cwd() + '/index.html');
-    });
-  }
+  // private setupRoutes() {
+  //   // this.app.get('/', (req: Request, res: Response) => {
+  //   //   res.sendFile(process.cwd() + '/index.html');
+  //   // });
+  // }
 }

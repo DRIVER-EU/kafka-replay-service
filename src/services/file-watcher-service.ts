@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { EventEmitter } from 'events';
 import * as chokidar from 'chokidar';
-import { Message } from '../models/message';
+import { Message, IMessage } from '../models/message';
 
 const log = console.log.bind(console);
 
@@ -51,7 +51,21 @@ export class FileWatcherService extends EventEmitter {
     return Object.keys(this.messages)
       .filter((p) => p.indexOf(sessionFolder) === 0)
       .map((p) => this.messages[p])
-      .map((m) => ({ filename: m.filename, label: m.label, timestampMsec: m.timestampMsec }));
+      .map((m) => this.createPublishedMessage(m));
+  }
+
+  /**
+   * Get all messages within a topic.
+   *
+   * @param session Session name
+   * @param topic Topic name
+   */
+  public getTopic(session: string, topic: string) {
+    const sessionFolder = path.join(this.watchFolder || '', session, topic);
+    return Object.keys(this.messages)
+      .filter((p) => p.indexOf(sessionFolder) === 0)
+      .map((p) => this.messages[p])
+      .map((m) => this.createPublishedMessage(m));
   }
 
   /**
@@ -60,7 +74,7 @@ export class FileWatcherService extends EventEmitter {
   public getAllSessions() {
     return Object.keys(this.messages)
       .map((p) => this.messages[p])
-      .map((m) => ({ filename: m.filename, label: m.label, timestampMsec: m.timestampMsec }));
+      .map((m) => this.createPublishedMessage(m));
   }
 
   /**
@@ -72,6 +86,10 @@ export class FileWatcherService extends EventEmitter {
     return this.messages.hasOwnProperty(filename)
       ? { message: this.messages[filename].data, topic: path.basename(path.dirname(filename)) }
       : null;
+  }
+
+  private createPublishedMessage(m: Message): IMessage {
+    return { id: m.id, filename: m.filename, label: m.label, topic: m.topic, session: m.session, timestampMsec: m.timestampMsec };
   }
 
   private ready() {

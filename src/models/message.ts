@@ -3,17 +3,33 @@ import * as path from 'path';
 import * as parser from 'xml2json';
 import { EventEmitter } from 'events';
 
-export class Message extends EventEmitter {
+export interface IMessage {
+  filename?: string;
+  id: string;
+  label: string;
+  topic: string;
+  session: string;
+  timestampMsec: number;
+}
+
+export class Message extends EventEmitter implements IMessage {
+  public id: string;
   public label: string;
-  public isValid = false;
+  public topic: string;
+  public session: string;
   public timestampMsec = 0;
   public data: any;
 
   constructor(public filename: string) {
     super();
+    const ext = path.extname(filename);
     const basename = path.basename(filename);
     this.timestampMsec = this.extractTimestamp(basename);
     this.label = this.extractLabel(basename);
+    const folders = path.dirname(filename).split(path.sep);
+    this.topic = folders.pop() || '';
+    this.session = folders.pop() || '';
+    this.id = `${this.session}/${this.topic}/${basename}.${ext}`;
     this.loadMessage(filename);
   }
 
@@ -83,7 +99,7 @@ export class Message extends EventEmitter {
   }
 
   private ready() {
-    this.isValid = this.data !== null && typeof this.data !== 'undefined';
-    this.emit('ready', this.isValid);
+    const isValid = this.data !== null && typeof this.data !== 'undefined';
+    this.emit('ready', isValid);
   }
 }

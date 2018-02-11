@@ -25,7 +25,7 @@ export class CommandLineInterface {
       name: 'port',
       alias: 'p',
       type: Number,
-      defaultValue: 8100,
+      defaultValue: 8200,
       typeLabel: '[underline]{Number}',
       description: 'Endpoint port, e.g. http://localhost:PORT/time'
     },
