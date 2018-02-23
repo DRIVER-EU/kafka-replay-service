@@ -1,0 +1,300 @@
+{
+  "type": "record",
+  "name": "Item",
+  "namespace": "com.xvrsim.model.entity",
+  "fields": [
+    {
+      "name": "guid",
+      "type": "string",
+      "doc": "globally unique identifier for this entity"
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "name of this entity"
+    },
+    {
+      "name": "owner",
+      "type": "string",
+      "doc": "identifier of the simulator currently responsible for this entity"
+    },
+    {
+      "name": "location",
+      "type": {
+        "type": "record",
+        "name": "Location",
+        "namespace": "eu.driver.model.geo",
+        "fields": [
+          {
+            "name": "latitude",
+            "type": "double",
+            "doc": "latitude in degrees (-90, 90] - 0 is equator"
+          },
+          {
+            "name": "longitude",
+            "type": "double",
+            "doc": "longitude in degrees (-180, 180] - 0 is line [geographic north - Greenwich - geographic south]"
+          },
+          {
+            "name": "altitude",
+            "type": "double",
+            "doc": "altitude in meters - 0 is surface of WGS84-based ellipsoid"
+          }
+        ]
+      },
+      "doc": "location of this item"
+    },
+    {
+      "name": "orientation",
+      "type": {
+        "type": "record",
+        "name": "Orientation",
+        "namespace": "eu.driver.model.geo",
+        "fields": [
+          {
+            "name": "yaw",
+            "type": "double",
+            "doc": "yaw or heading in degrees [0, 360) - 0 is pointing towards geographic north - yaw of 90 is EAST, yaw of 270 is WEST"
+          },
+          {
+            "name": "pitch",
+            "type": "double",
+            "doc": "pitch in degrees (-90, 90] - 0 is perpendicular to line [origin of item - centre of WGS84-based ellipsoid] - pitch of +45 is 45 degrees pointing upwards, -45 is 45 degrees pointing downwards"
+          },
+          {
+            "name": "roll",
+            "type": "double",
+            "doc": "roll or bank in degrees (-180, 180] - 0 is perpendicular to line [origin of item - centre of WGS84-based ellipsoid] - bank of +45 is 45 degrees roll to the right, -45 is 45 degrees roll to the left"
+          }
+        ]
+      },
+      "doc": "orientation of this item"
+    },
+    {
+      "name": "velocity",
+      "type": {
+        "type": "record",
+        "name": "Velocity",
+        "namespace": "eu.driver.model.geo",
+        "fields": [
+          {
+            "name": "yaw",
+            "type": "double",
+            "doc": "yaw or heading in degrees [0, 360) - 0 is pointing towards geographic north - yaw of 90 is EAST, yaw of 270 is WEST"
+          },
+          {
+            "name": "pitch",
+            "type": "double",
+            "doc": "pitch in degrees (-90, 90] - 0 is perpendicular to line [origin of item - centre of WGS84-based ellipsoid] - pitch of +45 is 45 degrees pointing upwards, -45 is 45 degrees pointing downwards"
+          },
+          {
+            "name": "magnitude",
+            "type": "double",
+            "doc": "velocity in meter per second [0, inf) - 0 is standing still relative to the earth"
+          }
+        ]
+      },
+      "doc": "movement vector of the item, including the magnitude"
+    },
+    {
+      "name": "visibleForParticipant",
+      "type": "boolean",
+      "doc": "indication whether or not this item is visible for all participants"
+    },
+    {
+      "name": "movable",
+      "type": "boolean",
+      "doc": "indication whether or not this item is movable in the simulation world"
+    },
+    {
+      "name": "itemType",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "ObjectType",
+          "namespace": "com.xvrsim.model.entity.item",
+          "fields": [
+            {
+              "name": "subType",
+              "type": {
+                "type": "enum",
+                "name": "ObjectSubType",
+                "symbols": [
+                  "PROP",
+                  "TOOL"
+                ]
+              },
+              "doc": "sub type of objects that this item is"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "PersonType",
+          "namespace": "com.xvrsim.model.entity.item",
+          "fields": [
+            {
+              "name": "gender",
+              "type": {
+                "type": "enum",
+                "name": "PersonSubType",
+                "symbols": [
+                  "MALE",
+                  "FEMALE",
+                  "UNKNOWN"
+                ]
+              },
+              "doc": "gender of the person"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "VehicleType",
+          "namespace": "com.xvrsim.model.entity.item",
+          "fields": [
+            {
+              "name": "subType",
+              "type": {
+                "type": "enum",
+                "name": "VehicleSubType",
+                "symbols": [
+                  "CAR",
+                  "VAN",
+                  "TRUCK",
+                  "BOAT",
+                  "PLANE",
+                  "HELICOPTER",
+                  "MOTORCYCLE"
+                ]
+              },
+              "doc": "sub type of vehicles that this item is"
+            }
+          ]
+        }
+      ],
+      "doc": "concrete type of this item - can be of type ObjectType, PersonType or VehicleType",
+      "default": null
+    },
+    {
+      "name": "scenarioLabel",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "EnvironmentLabel",
+          "namespace": "com.xvrsim.model.entity.item",
+          "fields": [
+            {
+              "name": "subLabel",
+              "type": {
+                "type": "enum",
+                "name": "EnvironmentSubLabel",
+                "symbols": [
+                  "FOLIAGE",
+                  "ROAD"
+                ]
+              },
+              "doc": "sub label of environment that this item has"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "IncidentLabel",
+          "namespace": "com.xvrsim.model.entity.item",
+          "fields": [
+            {
+              "name": "subLabel",
+              "type": {
+                "type": "enum",
+                "name": "IncidentSubLabel",
+                "symbols": [
+                  "FIRE",
+                  "CRASH"
+                ]
+              },
+              "doc": "sub label of incident that this item has"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "RescueLabel",
+          "namespace": "com.xvrsim.model.entity.item",
+          "fields": [
+            {
+              "name": "subLabel",
+              "type": {
+                "type": "enum",
+                "name": "RescueSubLabel",
+                "symbols": [
+                  "POLICE",
+                  "MEDICAL",
+                  "FIRE",
+                  "SECURITY",
+                  "MILITARY"
+                ]
+              },
+              "doc": "sub label of rescue that this item has"
+            }
+          ]
+        }
+      ],
+      "doc": "scenario type of this item - can be of type EnvironmentLabel, IncidentLabel or RescueLabel",
+      "default": null
+    },
+    {
+      "name": "userTags",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "string"
+        }
+      ],
+      "doc": "list of all tags the user provided associated with this item",
+      "default": null
+    },
+    {
+      "name": "physicalConnections",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "string"
+        }
+      ],
+      "doc": "list of physical connection entities references (represented by their GUIDs) this item has",
+      "default": null
+    },
+    {
+      "name": "group",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "reference to the group connection entity (represented by its GUID) this item is part of",
+      "default": null
+    },
+    {
+      "name": "formation",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "reference to the formation connection entity (represented by its GUID) this item is part of",
+      "default": null
+    },
+    {
+      "name": "unit",
+      "type": [
+        "null",
+        "string"
+      ],
+      "doc": "reference to the unit connection entity (represented by its GUID) this item is part of",
+      "default": null
+    }
+  ]
+}

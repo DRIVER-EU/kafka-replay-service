@@ -1,0 +1,269 @@
+{
+  "type": "record",
+  "name": "FeatureCollection",
+  "namespace": "eu.driver.model.geojson",
+  "doc": "A GeoJSON FeatureCollection object. As the properties are generic, it should be replaced by a record with named properties.",
+  "fields": [
+    {
+      "name": "type",
+      "type": {
+        "type": "enum",
+        "name": "FeatureCollectionType",
+        "symbols": [
+          "FeatureCollection"
+        ]
+      },
+      "default": "FeatureCollection"
+    },
+    {
+      "name": "bbox",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "double"
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "features",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": {
+            "type": "record",
+            "name": "Feature",
+            "doc": "A GeoJSON Feature object",
+            "fields": [
+              {
+                "name": "type",
+                "type": {
+                  "type": "enum",
+                  "name": "FeatureType",
+                  "symbols": [
+                    "Feature"
+                  ]
+                },
+                "default": "Feature"
+              },
+              {
+                "name": "bbox",
+                "type": [
+                  "null",
+                  {
+                    "type": "array",
+                    "items": "double"
+                  }
+                ],
+                "default": null
+              },
+              {
+                "name": "geometry",
+                "type": [
+                  {
+                    "type": "record",
+                    "name": "Point",
+                    "doc": "Describes a point geometry",
+                    "fields": [
+                      {
+                        "name": "type",
+                        "type": {
+                          "type": "enum",
+                          "name": "PointType",
+                          "symbols": [
+                            "Point"
+                          ]
+                        },
+                        "default": "Point"
+                      },
+                      {
+                        "name": "coordinates",
+                        "type": {
+                          "type": "array",
+                          "items": "double"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "record",
+                    "name": "LineString",
+                    "doc": "Describes a LineString geometry",
+                    "fields": [
+                      {
+                        "name": "type",
+                        "type": {
+                          "type": "enum",
+                          "name": "LineStringType",
+                          "symbols": [
+                            "LineString"
+                          ]
+                        },
+                        "default": "LineString"
+                      },
+                      {
+                        "name": "coordinates",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": "double"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "record",
+                    "name": "MultiLineString",
+                    "doc": "Describes a MultiLineString geometry",
+                    "fields": [
+                      {
+                        "name": "type",
+                        "type": {
+                          "type": "enum",
+                          "name": "MultiLineStringType",
+                          "symbols": [
+                            "MultiLineString"
+                          ]
+                        },
+                        "default": "MultiLineString"
+                      },
+                      {
+                        "name": "coordinates",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "array",
+                              "items": "double"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "record",
+                    "name": "Polygon",
+                    "doc": "Describes a Polygon geometry",
+                    "fields": [
+                      {
+                        "name": "type",
+                        "type": {
+                          "type": "enum",
+                          "name": "PolygonType",
+                          "symbols": [
+                            "Polygon"
+                          ]
+                        },
+                        "default": "Polygon"
+                      },
+                      {
+                        "name": "coordinates",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "array",
+                              "items": "double"
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "type": "record",
+                    "name": "MultiPolygon",
+                    "doc": "Describes a MultiPolygon geometry",
+                    "fields": [
+                      {
+                        "name": "type",
+                        "type": {
+                          "type": "enum",
+                          "name": "MultiPolygonType",
+                          "symbols": [
+                            "MultiPolygon"
+                          ]
+                        },
+                        "default": "MultiPolygon"
+                      },
+                      {
+                        "name": "coordinates",
+                        "type": {
+                          "type": "array",
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "array",
+                              "items": {
+                                "type": "array",
+                                "items": "double"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "properties",
+                "type": {
+                  "type": "record",
+                  "name": "XVRItemProperties",
+                  "doc": "Specfic properties for an XVR emergency vehicle",
+                  "fields": [
+                    {
+                      "name": "guid",
+                      "type": "string"
+                    },
+                    {
+                      "name": "speed",
+                      "type": "double"
+                    },
+                    {
+                      "name": "yaw",
+                      "type": "double"
+                    },
+                    {
+                      "name": "pitch",
+                      "type": "double"
+                    },
+                    {
+                      "name": "roll",
+                      "type": "double"
+                    },
+                    {
+                      "name": "type",
+                      "type": "string"
+                    },
+                    {
+                      "name": "subType",
+                      "type": "string"
+                    },
+                    {
+                      "name": "label",
+                      "type": "string"
+                    },
+                    {
+                      "name": "subLabel",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "doc": "Any type, without infinite nesting, should be replaced during actual usage with a record with named properties."
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
