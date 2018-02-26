@@ -33,7 +33,7 @@
     "command-line-args": "^5.0.2",
     "command-line-usage": "^4.1.0",
     "express": "^4.16.2",
-    "node-test-bed-adapter": "^0.2.3",
+    "node-test-bed-adapter": "^0.2.6",
     "socketio": "^1.0.0",
     "xml2json": "^0.11.0"
   },
@@ -43,7 +43,7 @@
     "@types/command-line-args": "^4.0.2",
     "@types/express": "^4.11.1",
     "@types/kafka-node": "^2.0.6",
-    "@types/node": "^9.3.0",
+    "@types/node": "^9.4.6",
     "@types/socket.io": "^1.4.31",
     "@types/xml2json": "^0.10.0",
     "typescript": "^2.7.2"

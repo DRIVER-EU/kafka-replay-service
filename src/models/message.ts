@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as parser from 'xml2json';
 import { EventEmitter } from 'events';
+import { uuid4 } from 'node-test-bed-adapter';
 
 export interface IMessage {
   filename?: string;
@@ -10,26 +11,34 @@ export interface IMessage {
   topic: string;
   session: string;
   timestampMsec: number;
+  data?: IJsonObject | IJsonObject[];
 }
 
+export interface IJsonObject {
+  [key: string]: any;
+}
+
+/**
+ * A message contains the file information, label and timestamp, if any,
+ * as well as the actual data it contains, i.e. each message is loaded in memory.
+ */
 export class Message extends EventEmitter implements IMessage {
   public id: string;
   public label: string;
   public topic: string;
   public session: string;
   public timestampMsec = 0;
-  public data: any;
+  public data?: IJsonObject | IJsonObject[];
 
   constructor(public filename: string) {
     super();
-    const ext = path.extname(filename);
     const basename = path.basename(filename);
     this.timestampMsec = this.extractTimestamp(basename);
     this.label = this.extractLabel(basename);
     const folders = path.dirname(filename).split(path.sep);
     this.topic = folders.pop() || '';
     this.session = folders.pop() || '';
-    this.id = `${this.session}/${this.topic}/${basename}.${ext}`;
+    this.id = uuid4();
     this.loadMessage(filename);
   }
 
@@ -81,7 +90,7 @@ export class Message extends EventEmitter implements IMessage {
       if (err) {
         console.error(`Error reading file ${filename}: ${err}`);
       } else {
-        this.data = parser.toJson(data);
+        this.data = JSON.parse(parser.toJson(data));
       }
       this.ready();
     });

@@ -12,6 +12,11 @@ export const getSession = (req: Request, res: Response, next: NextFunction) => {
   res.json(fws.getSession(session));
 };
 
+export const getMessage = (req: Request, res: Response, next: NextFunction) => {
+  const id = req.params.id as string;
+  res.json(fws.getMessage(id));
+};
+
 export const getTopic = (req: Request, res: Response, next: NextFunction) => {
   const session = req.params.session as string;
   const topic = req.params.topic as string;

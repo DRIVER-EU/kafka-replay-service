@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { EventEmitter } from 'events';
 import * as chokidar from 'chokidar';
-import { Message, IMessage } from '../models/message';
+import { Message, IMessage, IJsonObject } from '../models/message';
 
 const log = console.log.bind(console);
 
@@ -10,7 +10,8 @@ export class FileWatcherService extends EventEmitter {
 
   private cwd = process.cwd();
   private watchFolder?: string;
-  private messages: { [path: string]: Message } = {};
+  private path2id: { [path: string]: string } = {};
+  private store: { [id: string]: Message } = {};
   private status: 'ready' | 'processing' | 'idle' = 'idle';
   private counter = 0;
 
@@ -48,9 +49,10 @@ export class FileWatcherService extends EventEmitter {
    */
   public getSession(session: string) {
     const sessionFolder = path.join(this.watchFolder || '', session);
-    return Object.keys(this.messages)
+    return Object.keys(this.path2id)
       .filter((p) => p.indexOf(sessionFolder) === 0)
-      .map((p) => this.messages[p])
+      .map((p) => this.path2id[p])
+      .map((p) => this.store[p])
       .map((m) => this.createPublishedMessage(m));
   }
 
@@ -62,9 +64,9 @@ export class FileWatcherService extends EventEmitter {
    */
   public getTopic(session: string, topic: string) {
     const sessionFolder = path.join(this.watchFolder || '', session, topic);
-    return Object.keys(this.messages)
+    return Object.keys(this.store)
       .filter((p) => p.indexOf(sessionFolder) === 0)
-      .map((p) => this.messages[p])
+      .map((p) => this.store[p])
       .map((m) => this.createPublishedMessage(m));
   }
 
@@ -72,28 +74,29 @@ export class FileWatcherService extends EventEmitter {
    * Get all sessions, including their messages.
    */
   public getAllSessions() {
-    return Object.keys(this.messages)
-      .map((p) => this.messages[p])
+    return Object.keys(this.store)
+      .map((p) => this.store[p])
       .map((m) => this.createPublishedMessage(m));
   }
 
   /**
    * Returns the topic (folder name) and message data.
    *
-   * @param filename Absolute filename of the message
+   * @param id Id of the message
    */
-  public getMessage(filename: string) {
-    return this.messages.hasOwnProperty(filename)
-      ? { message: this.messages[filename].data, topic: path.basename(path.dirname(filename)) }
-      : null;
+  public getMessage(id: string): null | IMessage {
+    const message = this.store[id];
+    if (!message || !message.data) { return null; }
+    const { label, topic, session, timestampMsec, data } = message;
+    return { id, label, topic, session, timestampMsec, data };
   }
 
   private createPublishedMessage(m: Message): IMessage {
-    return { id: m.id, filename: m.filename, label: m.label, topic: m.topic, session: m.session, timestampMsec: m.timestampMsec };
+    return { id: m.id, label: m.label, topic: m.topic, session: m.session, timestampMsec: m.timestampMsec };
   }
 
   private ready() {
-    log('Initial scan complete. Ready for changes...');
+    log('Initial scan complete. Waiting for changes...');
     this.status = 'processing';
   }
 
@@ -110,28 +113,41 @@ export class FileWatcherService extends EventEmitter {
       this.counter--;
       if (isValid) {
         log(`File ${path} has been added`);
-        this.messages[path] = message;
+        this.path2id[path] = message.id;
+        this.store[message.id] = message;
       }
       this.emitReadyOrUpdated();
     });
   }
 
+  /**
+   * File has been deleted in the file system
+   * @param path Full filename
+   */
   private deleteFile(path: string) {
+    const id = this.path2id[path];
+    if (!id || !this.store.hasOwnProperty(id)) { return; }
     log(`File ${path} has been removed`);
-    delete this.messages[path];
+    this.deleteMessage(path);
     this.emit('updated');
   }
 
   private deleteFolder(path: string) {
     log(`Directory ${path} has been removed`);
     const deleting: string[] = [];
-    for (let key in this.messages) {
-      if (!this.messages.hasOwnProperty(key) || key.indexOf(path) === 0) {
+    for (let p in this.path2id) {
+      if (!this.path2id.hasOwnProperty(p) || p.indexOf(path) === 0) {
         continue;
       }
-      deleting.push(key);
+      deleting.push(p);
     }
-    deleting.forEach((d) => delete this.messages[d]);
+    deleting.forEach((d) => this.deleteMessage(path));
     this.emit('updated');
+  }
+
+  private deleteMessage(path: string) {
+    const id = this.path2id[path];
+    delete this.path2id[path];
+    delete this.store[id];
   }
 }
