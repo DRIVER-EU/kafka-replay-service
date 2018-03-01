@@ -4,42 +4,64 @@ import * as parser from 'xml2json';
 import { EventEmitter } from 'events';
 import { uuid4 } from 'node-test-bed-adapter';
 
-export interface IMessage {
+/**
+ * The message queue is a singleton that will receive all messages that need to be sent.
+ */
+export const messageQueue: ILogMessage[] = [];
+
+export interface IJsonObject {
+  [key: string]: any;
+}
+
+export interface IDefaultKey {
+  distributionID?: string;
+  senderID?: string;
+  dateTimeSent?: number;
+  dateTimeExpires?: number;
+  distributionStatus?: string;
+  distributionKind?: string;
+}
+
+export interface ILogMessage {
   filename?: string;
   id: string;
   label: string;
   topic: string;
   session: string;
   timestampMsec: number;
-  data?: IJsonObject | IJsonObject[];
-}
-
-export interface IJsonObject {
-  [key: string]: any;
+  partition?: number;
+  offset?: number;
+  key?: IDefaultKey;
+  value?: IJsonObject | IJsonObject[];
 }
 
 /**
  * A message contains the file information, label and timestamp, if any,
  * as well as the actual data it contains, i.e. each message is loaded in memory.
  */
-export class Message extends EventEmitter implements IMessage {
-  public id: string;
-  public label: string;
-  public topic: string;
-  public session: string;
+export class Message extends EventEmitter implements ILogMessage {
+  public id = uuid4();
+  public filename = '';
+  public label = '';
+  public topic = '';
+  public session = '';
+  public key = {} as IDefaultKey;
   public timestampMsec = 0;
-  public data?: IJsonObject | IJsonObject[];
+  public value?: IJsonObject | IJsonObject[];
 
-  constructor(public filename: string) {
+  constructor(public file?: string) {
     super();
-    const basename = path.basename(filename);
+    if (!file) {
+      return;
+    }
+    this.filename = file;
+    const basename = path.basename(file);
     this.timestampMsec = this.extractTimestamp(basename);
     this.label = this.extractLabel(basename);
-    const folders = path.dirname(filename).split(path.sep);
+    const folders = path.dirname(file).split(path.sep);
     this.topic = folders.pop() || '';
     this.session = folders.pop() || '';
-    this.id = uuid4();
-    this.loadMessage(filename);
+    this.loadMessage(file);
   }
 
   private extractTimestamp(filename: string) {
@@ -90,7 +112,7 @@ export class Message extends EventEmitter implements IMessage {
       if (err) {
         console.error(`Error reading file ${filename}: ${err}`);
       } else {
-        this.data = JSON.parse(parser.toJson(data));
+        this.value = JSON.parse(parser.toJson(data));
       }
       this.ready();
     });
@@ -101,14 +123,14 @@ export class Message extends EventEmitter implements IMessage {
       if (err) {
         console.error(`Error reading file ${filename}: ${err}`);
       } else {
-        this.data = JSON.parse(data);
+        this.value = JSON.parse(data);
       }
       this.ready();
     });
   }
 
   private ready() {
-    const isValid = this.data !== null && typeof this.data !== 'undefined';
+    const isValid = this.value !== null && typeof this.value !== 'undefined';
     this.emit('ready', isValid);
   }
 }

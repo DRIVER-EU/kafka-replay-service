@@ -1,10 +1,12 @@
+import * as express from 'express';
+import * as socketIO from 'socket.io';
+import * as cors from 'cors';
 import { FileWatcherService } from './services/file-watcher-service';
 import { ICommandOptions } from './';
 import { createServer, Server } from 'http';
 import { Application } from 'express';
-import * as express from 'express';
-import * as socketIO from 'socket.io';
-import { setupRoutes } from './routes/v1/api-router';
+import { setupRoutes } from './routes/v1/router';
+import { PlayerService } from './player-service';
 
 const log = console.log;
 
@@ -16,14 +18,18 @@ export class App {
   private server: Server;
   private io: SocketIO.Server;
   private fws = FileWatcherService.Instance;
+  private playerService: PlayerService;
 
   constructor(options: ICommandOptions) {
     this.port = options.port;
     this.app = express();
+    this.app.use(cors());
     this.server = createServer(this.app);
     this.io = socketIO(this.server);
+    this.playerService = new PlayerService(options);
     this.fws.on('ready', () => {
       this.fws.on('updated', () => this.io.emit('session_update', this.fws.getAllSessions()));
+      this.playerService.connect();
       // log(this.fws.getAllSessions().map(s => s.filename));
       // const f = this.fws.getAllSessions()[0].filename;
       // log(this.fws.getMessage(f));

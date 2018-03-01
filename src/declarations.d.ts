@@ -1,4 +1,4 @@
-declare module '*.json' {
+declare module 'package.json' {
   const foo: {
     name: string;
     version: string;
@@ -6,5 +6,10 @@ declare module '*.json' {
     license: string;
     description: string;
   };
+  export = foo;
+}
+
+declare module '*.json' {
+  const foo: any;
   export = foo;
 }

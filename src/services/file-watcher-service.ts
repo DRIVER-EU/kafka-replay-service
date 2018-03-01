@@ -1,7 +1,8 @@
+import * as fs from 'fs';
 import * as path from 'path';
-import { EventEmitter } from 'events';
 import * as chokidar from 'chokidar';
-import { Message, IMessage, IJsonObject } from '../models/message';
+import { EventEmitter } from 'events';
+import { Message, ILogMessage } from '../models/message';
 
 const log = console.log.bind(console);
 
@@ -10,7 +11,6 @@ export class FileWatcherService extends EventEmitter {
 
   private cwd = process.cwd();
   private watchFolder?: string;
-  private path2id: { [path: string]: string } = {};
   private store: { [id: string]: Message } = {};
   private status: 'ready' | 'processing' | 'idle' = 'idle';
   private counter = 0;
@@ -27,7 +27,7 @@ export class FileWatcherService extends EventEmitter {
   }
 
   public setWatchFolder(folder: string) {
-    this.watchFolder = path.join(this.cwd, folder);
+    this.watchFolder = path.normalize(path.join(this.cwd, folder));
     const watcher = chokidar.watch(path.join(folder, '**/*'), {
       cwd: this.cwd,
       ignored: /(^|[\/\\])\../,
@@ -36,8 +36,8 @@ export class FileWatcherService extends EventEmitter {
 
     watcher
       .on('add', (p: string) => this.addFile(path.join(this.cwd, p)))
-      .on('unlink', (p: string) => this.deleteFile(path.join(this.cwd, p)))
-      .on('unlinkDir', (p: string) => this.deleteFolder(path.join(this.cwd, p)))
+      .on('unlink', (p: string) => this.deleteFileOrFolder(path.join(this.cwd, p)))
+      .on('unlinkDir', (p: string) => this.deleteFileOrFolder(path.join(this.cwd, p)))
       .on('error', (error: string) => console.error(`Watcher error: ${error}`))
       .on('ready', () => this.ready());
   }
@@ -47,12 +47,10 @@ export class FileWatcherService extends EventEmitter {
    *
    * @param session Session name
    */
-  public getSession(session: string) {
-    const sessionFolder = path.join(this.watchFolder || '', session);
-    return Object.keys(this.path2id)
-      .filter((p) => p.indexOf(sessionFolder) === 0)
-      .map((p) => this.path2id[p])
-      .map((p) => this.store[p])
+  public getMessagesInSession(session: string) {
+    return Object.keys(this.store)
+      .map((id) => this.store[id])
+      .filter((m) => m.session === session)
       .map((m) => this.createPublishedMessage(m));
   }
 
@@ -62,21 +60,29 @@ export class FileWatcherService extends EventEmitter {
    * @param session Session name
    * @param topic Topic name
    */
-  public getTopic(session: string, topic: string) {
-    const sessionFolder = path.join(this.watchFolder || '', session, topic);
+  public getMessagesInSessionTopic(session: string, topic: string) {
     return Object.keys(this.store)
-      .filter((p) => p.indexOf(sessionFolder) === 0)
-      .map((p) => this.store[p])
+      .map((id) => this.store[id])
+      .filter((m) => m.session === session && m.topic === topic)
       .map((m) => this.createPublishedMessage(m));
   }
 
   /**
-   * Get all sessions, including their messages.
+   * Get all sessions.
    */
   public getAllSessions() {
     return Object.keys(this.store)
-      .map((p) => this.store[p])
-      .map((m) => this.createPublishedMessage(m));
+      .map((key) => this.store[key])
+      .reduce((p, c) => p.indexOf(c.session) < 0 ? [...p, c.session] : p, [] as string[]);
+  }
+
+  /**
+   * Get all topics within a session.
+   */
+  public getTopicsInSession(session: string) {
+    return Object.keys(this.store)
+      .map((key) => this.store[key])
+      .reduce((p, c) => c.session === session && p.indexOf(c.topic) < 0 ? [...p, c.topic] : p, [] as string[]);
   }
 
   /**
@@ -84,14 +90,16 @@ export class FileWatcherService extends EventEmitter {
    *
    * @param id Id of the message
    */
-  public getMessage(id: string): null | IMessage {
+  public getMessage(id: string): null | ILogMessage {
     const message = this.store[id];
-    if (!message || !message.data) { return null; }
-    const { label, topic, session, timestampMsec, data } = message;
-    return { id, label, topic, session, timestampMsec, data };
+    if (!message || !message.value) {
+      return null;
+    }
+    const { label, topic, session, timestampMsec, key, value } = message;
+    return { id, label, topic, session, timestampMsec, key, value };
   }
 
-  private createPublishedMessage(m: Message): IMessage {
+  private createPublishedMessage(m: Message): ILogMessage {
     return { id: m.id, label: m.label, topic: m.topic, session: m.session, timestampMsec: m.timestampMsec };
   }
 
@@ -101,53 +109,111 @@ export class FileWatcherService extends EventEmitter {
   }
 
   private emitReadyOrUpdated() {
-    if (this.counter !== 0) { return; }
+    if (this.counter !== 0) {
+      return;
+    }
     this.emit(this.status === 'ready' ? 'updated' : 'ready');
     this.status = 'ready';
   }
 
-  private addFile(path: string) {
+  /**
+   * Process a file, adding all messages to the store.
+   *
+   * @param filename Path to the discovered file
+   */
+  private addFile(filename: string) {
     this.counter++;
-    const message = new Message(path);
+    if (this.isLogFile(filename)) {
+      return this.addMessagesFromLogFile(filename);
+    }
+    const message = new Message(filename);
     message.on('ready', (isValid: boolean) => {
       this.counter--;
-      if (isValid) {
-        log(`File ${path} has been added`);
-        this.path2id[path] = message.id;
-        this.store[message.id] = message;
+      if (!isValid) {
+        return;
       }
+      log(`File ${filename} has been added`);
+      this.store[message.id] = message;
       this.emitReadyOrUpdated();
     });
   }
 
   /**
-   * File has been deleted in the file system
-   * @param path Full filename
+   * Add multiple messages to the store.
+   *
+   * @param filename Name of a log file, containing 1 or more messages
    */
-  private deleteFile(path: string) {
-    const id = this.path2id[path];
-    if (!id || !this.store.hasOwnProperty(id)) { return; }
-    log(`File ${path} has been removed`);
-    this.deleteMessage(path);
-    this.emit('updated');
-  }
-
-  private deleteFolder(path: string) {
-    log(`Directory ${path} has been removed`);
-    const deleting: string[] = [];
-    for (let p in this.path2id) {
-      if (!this.path2id.hasOwnProperty(p) || p.indexOf(path) === 0) {
-        continue;
+  private addMessagesFromLogFile(filename: string) {
+    fs.readFile(filename, 'utf8', (err, content) => {
+      if (err) {
+        console.error(`Error reading log file ${filename}: ${err}`);
+      } else {
+        const data: ILogMessage[] = JSON.parse(content);
+        if (!(data instanceof Array)) {
+          return console.error(`Error reading log file ${filename}: data is not an array.`);
+        }
+        const session = path.dirname(filename).split(path.sep).pop();
+        if (!session) {
+          return console.error('addMessagesFromLogFile - error reading session.');
+        }
+        const extractLabel = (m: ILogMessage) => {
+          const senderID = (m.key && m.key.senderID) || '?';
+          return (m.value && !(m.value instanceof Array))
+            ? m.value.name || m.value.title || m.value.label || senderID
+            : senderID;
+        };
+        const minTime = data
+          .reduce((p, c) => c.key && c.key.dateTimeSent ? Math.min(p, c.key.dateTimeSent) : p, Number.MAX_SAFE_INTEGER);
+        data
+          .map((m) => {
+            const msg = new Message();
+            msg.filename = filename;
+            msg.session = session;
+            msg.topic = m.topic;
+            if (m.key && m.value) {
+              msg.key = m.key;
+              msg.value = m.value;
+              msg.label = extractLabel(m);
+              // Convert the timestamp to a relative time
+              msg.timestampMsec = m.key.dateTimeSent ? Math.max(0, m.key.dateTimeSent - minTime) : 0;
+            }
+            return msg;
+          })
+          .forEach((m) => (this.store[m.id] = m));
+        this.counter--;
+        this.emitReadyOrUpdated();
       }
-      deleting.push(p);
-    }
-    deleting.forEach((d) => this.deleteMessage(path));
+    });
+  }
+
+  /**
+   * A log file is a file downloaded from the Kafka topics UI, which is a JSON file containing a
+   * JSON array, where each message has a topic, key, value, parition and offset.
+   *
+   * The check is based on whether they are located right after the session path, i.e. there is no
+   * additional topic folder.
+   *
+   * @param filename Path to the file
+   */
+  private isLogFile(filename: string) {
+    return path.normalize(path.dirname(path.dirname(filename))) === this.watchFolder;
+  }
+
+  /**
+   * File has been deleted in the file system
+   * @param filename Full filename
+   */
+  private deleteFileOrFolder(filename: string) {
+    log(`${path} has been deleted.`);
+    const deleting = Object.keys(this.store)
+      .map((id) => this.store[id])
+      .filter((m) => m.filename.indexOf(filename) === 0)
+      .map((m) => m.id);
+    deleting.forEach((id) => this.deleteMessage(id));
     this.emit('updated');
   }
 
-  private deleteMessage(path: string) {
-    const id = this.path2id[path];
-    delete this.path2id[path];
+  private deleteMessage(id: string) {
     delete this.store[id];
   }
 }

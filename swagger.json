@@ -1,0 +1,269 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is a simple API to replay logged or manually created JSON messages via Kafka",
+    "version": "1.0.0",
+    "title": "kafka-replay-service",
+    "termsOfService": "http://github.com/DRIVER-EU/kafka-replay-service/LICENSE.md",
+    "contact": {
+      "email": "erik.vullings@gmail.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "127.0.0.1:8200",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "sessions",
+      "description": "Get session info and play them"
+    },
+    {
+      "name": "messages",
+      "description": "Get message details"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/sessions": {
+      "get": {
+        "tags": [
+          "sessions"
+        ],
+        "summary": "Get all the sessions",
+        "description": "Get all the available session names.",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SessionName"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        }
+      }
+    },
+    "/sessions/{sessionID}/topics": {
+      "get": {
+        "tags": [
+          "sessions"
+        ],
+        "summary": "Get all the topics in a session",
+        "parameters": [
+          {
+            "name": "sessionID",
+            "in": "path",
+            "description": "ID of session to return",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TopicName"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        },
+        "produces": [
+          "application/json"
+        ]
+      }
+    },
+    "/sessions/{sessionID}/": {
+      "parameters": [
+        {
+          "name": "sessionID",
+          "in": "path",
+          "description": "ID of session to return",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "sessions"
+        ],
+        "summary": "Get all the messages in a session",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Message"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        },
+        "produces": [
+          "application/json"
+        ]
+      },
+      "post": {
+        "tags": [
+          "sessions"
+        ],
+        "summary": "Play all the messages in the session",
+        "description": "Based on the timestamp of the original message, and the current (simulation) time, the messages are published in the original order.",
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      }
+    },
+    "/sessions/{sessionID}/{topicID}/": {
+      "parameters": [
+        {
+          "name": "sessionID",
+          "in": "path",
+          "description": "ID of session to return",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "topicID",
+          "in": "path",
+          "description": "ID of topic to return",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "sessions"
+        ],
+        "summary": "Get all the messages in a session topic",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/SessionName"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tag value"
+          }
+        },
+        "produces": [
+          "application/json"
+        ]
+      },
+      "post": {
+        "tags": [
+          "sessions"
+        ],
+        "summary": "Play all the messages in the session topic",
+        "description": "Based on the timestamp of the original message, and the current (simulation) time, the messages are published in the original order.",
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "400": {
+            "description": "Invalid status value"
+          }
+        }
+      }
+    },
+    "/messages/{messageID}": {
+      "parameters": [
+        {
+          "name": "messageID",
+          "in": "path",
+          "description": "ID of the message to return",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "tags": [
+          "messages"
+        ],
+        "summary": "Get a specific message",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "items": {
+                "$ref": "#/definitions/Message"
+              }
+            }
+          },
+          "404": {
+            "description": "Message not found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "messages"
+        ],
+        "summary": "Publish the message",
+        "responses": {
+          "200": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Message not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "SessionName": {
+      "type": "string"
+    },
+    "TopicName": {
+      "type": "string"
+    },
+    "Message": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "topic": {
+          "type": "string"
+        },
+        "session": {
+          "type": "string"
+        },
+        "timestampMsec": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    }
+  }
+}
