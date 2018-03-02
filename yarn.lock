@@ -13,7 +13,7 @@
     "@types/express" "*"
     "@types/node" "*"
 
-"@types/chokidar@^1.7.4":
+"@types/chokidar@^1.7.5":
   version "1.7.5"
   resolved "https://registry.yarnpkg.com/@types/chokidar/-/chokidar-1.7.5.tgz#1fa78c8803e035bed6d98e6949e514b133b0c9b6"
   dependencies:
@@ -422,7 +422,7 @@ chainsaw@~0.1.0:
   dependencies:
     traverse ">=0.3.0 <0.4"
 
-chokidar@^2.0.1:
+chokidar@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-2.0.2.tgz#4dc65139eeb2714977735b6a35d06e97b494dfd7"
   dependencies:
@@ -1420,8 +1420,8 @@ mixin-deep@^1.2.0:
     minimist "0.0.8"
 
 moment@2.x.x:
-  version "2.20.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
+  version "2.21.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
 
 ms@0.7.1:
   version "0.7.1"
@@ -1507,9 +1507,9 @@ node-pre-gyp@^0.6.39:
     tar "^2.2.1"
     tar-pack "^3.4.0"
 
-node-test-bed-adapter@^0.2.6:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/node-test-bed-adapter/-/node-test-bed-adapter-0.2.6.tgz#e63aa8e0576f1bace6bafd305befff364fefb989"
+node-test-bed-adapter@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/node-test-bed-adapter/-/node-test-bed-adapter-0.3.0.tgz#e52c3a7634e411de748b2a6fc415633b9a5dd8a2"
   dependencies:
     "@types/kafka-node" "^2.0.6"
     avsc "^5.2.1"
