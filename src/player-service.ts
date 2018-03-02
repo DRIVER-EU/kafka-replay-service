@@ -16,7 +16,7 @@ export class PlayerService extends EventEmitter {
       schemaRegistry: 'localhost:3502',
       autoRegisterSchemas: true,
       schemaFolder: 'schemas',
-      fetchAllSchemas: false,
+      fetchAllSchemas: true,
       clientId: 'kafka-replay-service',
       consume: [
         // { topic: ConfigurationTopic }
@@ -49,7 +49,7 @@ export class PlayerService extends EventEmitter {
       if (messageQueue.length === 0) {
         return;
       }
-      const curTime = Date.now(); // adapter simTime
+      const curTime = this.adapter.simTime.valueOf();
       while (messageQueue.length > 0) {
         const m = messageQueue.shift() as ILogMessage;
         eventQueue.push({ timestamp: curTime + m.timestampMsec, message: m });
@@ -57,16 +57,18 @@ export class PlayerService extends EventEmitter {
     };
 
     const activeMessages = () => {
-      const curTime = Date.now(); // adapter simTime
+      const curTime = this.adapter.simTime.valueOf();
       const outbox = {} as { [topic: string]: ILogMessage[] };
       eventQueue = eventQueue.filter((c) => {
         if (c.timestamp <= curTime) {
           if (!outbox.hasOwnProperty(c.message.topic)) {
-            outbox[c.message.topic] = [];
-            this.adapter.addProducerTopics(c.message.topic);
+            outbox[c.message.topic] = [c.message];
+            Promise.resolve(this.adapter.addProducerTopics(c.message.topic));
+            return false;
+          } else {
+            outbox[c.message.topic].push(c.message);
+            return false;
           }
-          outbox[c.message.topic].push(c.message);
-          return false;
         }
         return true;
       });
