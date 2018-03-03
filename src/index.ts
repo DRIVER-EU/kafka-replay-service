@@ -64,13 +64,19 @@ export class CommandLineInterface {
     ${npmPackage.description}
 
     Replay logged messages that are stored inside a, potentially mounted, folder. The folder
-    layout is using the following convention:
+    layout is using the following convention, so you can either write your own message,
+    one message per file, or, alternatively, use a log file from Landoop's Kafka TOPICS UI:
+
     ROOT
     - logs
-      - SESSION_NAME261006
+      - SESSION_NAME
         - TOPIC_NAME
-          - TIMESTAMP_SCHEMA_NAME
-261006    `
+          - TIMESTAMP_FILENAME
+      - SESSION_NAME2
+        - [Kafka TOPICS UI log file].json
+
+    The API is documented using OpenAPI/Swagger at http://localhost:[port]/api-docs/
+    `
     },
     {
       header: 'Options',
