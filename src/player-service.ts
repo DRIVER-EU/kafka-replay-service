@@ -14,6 +14,7 @@ export class PlayerService extends EventEmitter {
     this.adapter = new TestBedAdapter({
       kafkaHost: 'localhost:3501',
       schemaRegistry: 'localhost:3502',
+      wrapUnions: 'auto',
       autoRegisterSchemas: true,
       schemaFolder: 'schemas',
       fetchAllSchemas: true,
@@ -88,7 +89,7 @@ export class PlayerService extends EventEmitter {
             if (error) {
               log.error(`startEventLoop - send: Error sending message: ${error}!`);
             } else {
-              log.debug(`startEventLoop - send: ` + data);
+              log.debug(`startEventLoop - send:\n` + JSON.stringify(data, null, 2));
             }
           })
         );
