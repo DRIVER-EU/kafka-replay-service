@@ -14,6 +14,7 @@ const log = console.log;
 export class App {
   /** Port number where the service listens for clients */
   private readonly port: number;
+  private started = false;
   private app: express.Application;
   private server: Server;
   private io: SocketIO.Server;
@@ -28,6 +29,8 @@ export class App {
     this.io = socketIO(this.server);
     this.playerService = new PlayerService(options);
     this.fws.on('ready', () => {
+      if (this.started) { return; }
+      this.started = true;
       this.fws.on('updated', () => this.io.emit('session_update', this.fws.getAllSessions()));
       this.playerService.connect();
       // log(this.fws.getAllSessions().map(s => s.filename));
