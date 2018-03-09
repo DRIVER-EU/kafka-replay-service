@@ -7,6 +7,7 @@ import { Application } from 'express';
 export interface ICommandOptions {
   kafkaHost: string;
   schemaRegistry: string;
+  schemaFolder: string;
   logFolder: string;
   port: number;
   help?: boolean;
@@ -53,6 +54,14 @@ export class CommandLineInterface {
       defaultValue: 'localhost:3502',
       typeLabel: '[underline]{String}',
       description: 'Schema registry, e.g. localhost:3502'
+    },
+    {
+      name: 'schemaFolder',
+      alias: 'x',
+      type: String,
+      defaultValue: '',
+      typeLabel: '[underline]{String}',
+      description: 'Folder where the schemas are stored, e.g. "schemas". If specified, automatically publish schemas to schema registry.'
     }
   ];
 
