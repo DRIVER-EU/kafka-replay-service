@@ -1,6 +1,6 @@
 # Kafka-Replay-Service
 
-A simple REST (+ websockets) service to play (publish) a sequence of messages to a Kafka topic. The messages you can play are based on their location in a folder (following the convention over configuration principle). The folder is actively watched, and new files will be automatically available.
+A simple REST (+websockets) service to play (publish) a sequence of messages to a Kafka topic. The messages you can play are based on their location in a folder (following the convention over configuration principle). The folder is actively watched, and new files will be automatically available.
 
 Replay logged messages that are stored inside a, potentially mounted, folder. The folder layout is using the following convention, so you can either write your own message, one message per file, or, alternatively, use a log file from Landoop's Kafka TOPICS UI:
 
@@ -12,7 +12,7 @@ ROOT
   - SESSION_NAME2
     - [Kafka TOPICS UI log file].json
 
-Messages that belong to each other are added to the same session. The topic name is the name of the topic to publish the messages to.
+Messages that belong to each other are added to the same session. The topic name is the name of the topic to publish the messages to. When a TIMESTAMP (a number in msec) is set, it is used to send the message after TIMESTAMP msec.
 
 The REST API is documented using OpenAPI/Swagger at [http://[HOST]:[PORT]/api-docs/](http://localhost:8200/api-docs).
 
@@ -39,3 +39,15 @@ In case we are dealing with multiple topics, the user can unselect specific topi
 ### Playback scenario-based
 
 Finally, if there is a time message signal on the test-bed, playback messages based on the external clock. The scenario duration is used to determine when to send a message.
+
+## Build instructions
+
+From the command prompt, install all dependencies using `npm i`. Under Windows, using Node v9, you may run into an installation error when installing `node-expat`. In that case, you can try the following:
+```
+npm i -g node-gyp
+cd node_modules\node-expat
+node-gyp rebuild
+```
+Optionally, you may also need to install the npm production tools, from an admin prompt: `npm install --global --production windows-build-tools`.
+
+Next, run `npm start` to compile the TypeScript code to JavaScript.
