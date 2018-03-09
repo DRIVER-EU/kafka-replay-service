@@ -6,6 +6,12 @@ import { Message, ILogMessage } from '../models/message';
 
 const log = console.log.bind(console);
 
+// tslint:disable-next-line:interface-name
+export interface FileWatcherService {
+  on(event: 'ready', listener: () => void): this;
+  on(event: 'updated', listener: () => void): this;
+}
+
 export class FileWatcherService extends EventEmitter {
   private static instance: FileWatcherService;
 
@@ -50,7 +56,7 @@ export class FileWatcherService extends EventEmitter {
   public getMessagesInSession(session: string) {
     return Object.keys(this.store)
       .map((id) => this.store[id])
-      .filter((m) => m.session === session)
+      .filter((m) => m && m.session === session)
       .map((m) => this.createPublishedMessage(m));
   }
 
@@ -73,7 +79,7 @@ export class FileWatcherService extends EventEmitter {
   public getAllSessions() {
     return Object.keys(this.store)
       .map((key) => this.store[key])
-      .reduce((p, c) => p.indexOf(c.session) < 0 ? [...p, c.session] : p, [] as string[]);
+      .reduce((p, c) => (p.indexOf(c.session) < 0 ? [ ...p, c.session ] : p), [] as string[]);
   }
 
   /**
@@ -82,7 +88,7 @@ export class FileWatcherService extends EventEmitter {
   public getTopicsInSession(session: string) {
     return Object.keys(this.store)
       .map((key) => this.store[key])
-      .reduce((p, c) => c.session === session && p.indexOf(c.topic) < 0 ? [...p, c.topic] : p, [] as string[]);
+      .reduce((p, c) => (c.session === session && p.indexOf(c.topic) < 0 ? [ ...p, c.topic ] : p), [] as string[]);
   }
 
   /**
@@ -100,7 +106,15 @@ export class FileWatcherService extends EventEmitter {
   }
 
   private createPublishedMessage(m: Message): ILogMessage {
-    return { id: m.id, label: m.label, topic: m.topic, session: m.session, timestampMsec: m.timestampMsec };
+    return {
+      id: m.id,
+      label: m.label,
+      topic: m.topic,
+      session: m.session,
+      timestampMsec: m.timestampMsec,
+      value: m.value,
+      key: m.key
+    };
   }
 
   private ready() {
@@ -158,12 +172,14 @@ export class FileWatcherService extends EventEmitter {
         }
         const extractLabel = (m: ILogMessage) => {
           const senderID = (m.key && m.key.senderID) || '?';
-          return (m.value && !(m.value instanceof Array))
+          return m.value && !(m.value instanceof Array)
             ? m.value.name || m.value.title || m.value.label || senderID
             : senderID;
         };
-        const minTime = data
-          .reduce((p, c) => c.key && c.key.dateTimeSent ? Math.min(p, c.key.dateTimeSent) : p, Number.MAX_SAFE_INTEGER);
+        const minTime = data.reduce(
+          (p, c) => (c.key && c.key.dateTimeSent ? Math.min(p, c.key.dateTimeSent) : p),
+          Number.MAX_SAFE_INTEGER
+        );
         data
           .map((m) => {
             const msg = new Message();

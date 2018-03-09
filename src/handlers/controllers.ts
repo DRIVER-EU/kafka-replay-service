@@ -75,12 +75,15 @@ export const getMessagesInSessionTopicById = (req: Request, res: Response, next:
 export const playMessageById = (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id as string;
   const message = fws.getMessage(id);
+  res.sendStatus(addMessageToQueue(message) ? 200 : 404);
+};
+
+const addMessageToQueue = (message: ILogMessage | null) => {
   if (message) {
     messageQueue.push(Object.assign(message, { timestampMsec: 0 } as ILogMessage));
-    res.sendStatus(200); // OK
-  } else {
-    res.sendStatus(404); // not found
+    return true; // OK
   }
+  return false; // not found
 };
 
 /**
