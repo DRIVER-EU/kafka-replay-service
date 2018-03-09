@@ -1,8 +1,8 @@
 import { ILogMessage, messageQueue } from './models/message';
 import { ICommandOptions } from './index';
 import { EventEmitter } from 'events';
-import { Message, ProduceRequest } from 'kafka-node';
-import { TestBedAdapter, Logger, LogLevel } from 'node-test-bed-adapter';
+import { ProduceRequest } from 'kafka-node';
+import { TestBedAdapter, Logger, LogLevel, IAdapterMessage } from 'node-test-bed-adapter';
 
 const log = Logger.instance;
 
@@ -12,11 +12,11 @@ export class PlayerService extends EventEmitter {
   constructor(options: ICommandOptions) {
     super();
     this.adapter = new TestBedAdapter({
-      kafkaHost: 'localhost:3501',
-      schemaRegistry: 'localhost:3502',
+      kafkaHost: options.kafkaHost,
+      schemaRegistry: options.schemaRegistry,
       wrapUnions: 'auto',
-      autoRegisterSchemas: true,
-      schemaFolder: 'schemas',
+      schemaFolder: options.schemaFolder,
+      autoRegisterSchemas: options.schemaFolder ? true : false,
       fetchAllSchemas: true,
       clientId: 'kafka-replay-service',
       consume: [
@@ -60,6 +60,7 @@ export class PlayerService extends EventEmitter {
     const activeMessages = () => {
       const curTime = this.adapter.simTime.valueOf();
       const outbox = {} as { [topic: string]: ILogMessage[] };
+      if (eventQueue.length === 0) { return undefined; }
       eventQueue = eventQueue.filter((c) => {
         if (c.timestamp <= curTime) {
           if (!outbox.hasOwnProperty(c.message.topic)) {
@@ -76,7 +77,8 @@ export class PlayerService extends EventEmitter {
       return outbox;
     };
 
-    const send = (outbox: { [topic: string]: ILogMessage[] }) => {
+    const send = (outbox?: { [topic: string]: ILogMessage[] }) => {
+      if (!outbox) { return; }
       Object.keys(outbox)
         .map((topic) => outbox[topic])
         .map((messages) =>
@@ -110,7 +112,7 @@ export class PlayerService extends EventEmitter {
     run();
   }
 
-  private handleMessage(message: Message) {
+  private handleMessage(message: IAdapterMessage) {
     switch (message.topic) {
       case 'test-bed-configuration':
         break;
