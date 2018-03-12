@@ -24,7 +24,7 @@ export class PlayerService extends EventEmitter {
       ],
       produce: [],
       logging: {
-        logToConsole: LogLevel.Debug,
+        logToConsole: LogLevel.Warn,
         logToKafka: LogLevel.Error
       }
     });
