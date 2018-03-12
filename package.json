@@ -5,8 +5,9 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "start": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -w",
+    "patch-release": "npm version patch && npm publish && git push --follow-tags",
+    "minor-release": "npm version minor && npm publish && git push --follow-tags"
   },
   "repository": {
     "type": "git",

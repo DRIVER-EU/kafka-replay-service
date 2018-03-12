@@ -1,0 +1,14 @@
+.vscode
+.editorconfig
+.gitignore
+data
+src
+logs
+schemas
+node_modules
+package-lock.json
+yarn.lock
+tsconfig.json
+tslint.json
+*.json
+*.logs
