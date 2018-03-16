@@ -1,7 +1,7 @@
 import { ILogMessage } from './../models/message';
 import { FileWatcherService } from './../services/file-watcher-service';
 import { Request, Response, NextFunction } from 'express';
-import { messageQueue } from '../models/message';
+import { messageQueue, commandQueue, resetCommand } from '../models/message';
 
 const fws = FileWatcherService.Instance;
 
@@ -110,5 +110,17 @@ export const playMessagesInSessionTopicById = (req: Request, res: Response, next
 export const playMessagesInSessionById = (req: Request, res: Response, next: NextFunction) => {
   const session = req.params.session as string;
   messageQueue.push(...fws.getMessagesInSession(session));
+  res.sendStatus(200); // OK
+};
+
+/**
+ * Reset the player and remove all messages from the queue.
+ *
+ * @param req Request
+ * @param res Response
+ * @param next Next function
+ */
+export const reset = (req: Request, res: Response, next: NextFunction) => {
+  commandQueue.push(resetCommand);
   res.sendStatus(200); // OK
 };

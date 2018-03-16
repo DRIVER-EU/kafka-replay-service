@@ -9,6 +9,11 @@ import { uuid4 } from 'node-test-bed-adapter';
  */
 export const messageQueue: ILogMessage[] = [];
 
+/** For passing down messages from the controllers to the player */
+export const commandQueue: Symbol[] = [];
+
+export const resetCommand = Symbol('reset');
+
 export interface IJsonObject {
   [key: string]: any;
 }

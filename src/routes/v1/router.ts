@@ -11,7 +11,8 @@ import {
   playMessageById,
   getTopicsInSessionById,
   playMessagesInSessionById,
-  playMessagesInSessionTopicById
+  playMessagesInSessionTopicById,
+  reset
 } from '../../handlers/controllers';
 
 export const setupRoutes = (app: Application) => {
@@ -27,6 +28,8 @@ export const setupRoutes = (app: Application) => {
 
   router.get('/messages/:id', getMessageById);
   router.post('/messages/:id', playMessageById);
+
+  router.delete('/reset', reset);
 
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   app.use('/api/v1', router);

@@ -235,6 +235,19 @@
           }
         }
       }
+    },
+    "/reset": {
+      "delete": {
+        "tags": [
+          "player"
+        ],
+        "summary": "Stop playing and remove all messages from the queue",
+        "responses": {
+          "200": {
+            "description": "successful operation, queue cleared."
+          }
+        }
+      }
     }
   },
   "definitions": {

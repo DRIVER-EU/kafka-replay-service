@@ -1,4 +1,4 @@
-import { ILogMessage, messageQueue } from './models/message';
+import { ILogMessage, messageQueue, commandQueue, resetCommand } from './models/message';
 import { ICommandOptions } from './index';
 import { EventEmitter } from 'events';
 import { ProduceRequest } from 'kafka-node';
@@ -46,6 +46,16 @@ export class PlayerService extends EventEmitter {
   private startEventLoop() {
     let eventQueue: { timestamp: number; message: ILogMessage }[] = [];
 
+    const processCommands = () => {
+      if (commandQueue.length === 0) {
+        return;
+      }
+      const command = commandQueue.pop();
+      if (command === resetCommand) {
+        eventQueue = [];
+      }
+    };
+
     const enqueue = () => {
       if (messageQueue.length === 0) {
         return;
@@ -60,11 +70,13 @@ export class PlayerService extends EventEmitter {
     const activeMessages = () => {
       const curTime = this.adapter.simTime.valueOf();
       const outbox = {} as { [topic: string]: ILogMessage[] };
-      if (eventQueue.length === 0) { return undefined; }
+      if (eventQueue.length === 0) {
+        return undefined;
+      }
       eventQueue = eventQueue.filter((c) => {
         if (c.timestamp <= curTime) {
           if (!outbox.hasOwnProperty(c.message.topic)) {
-            outbox[c.message.topic] = [c.message];
+            outbox[c.message.topic] = [ c.message ];
             Promise.resolve(this.adapter.addProducerTopics(c.message.topic));
             return false;
           } else {
@@ -78,7 +90,9 @@ export class PlayerService extends EventEmitter {
     };
 
     const send = (outbox?: { [topic: string]: ILogMessage[] }) => {
-      if (!outbox) { return; }
+      if (!outbox) {
+        return;
+      }
       Object.keys(outbox)
         .map((topic) => outbox[topic])
         .map((messages) =>
@@ -98,6 +112,7 @@ export class PlayerService extends EventEmitter {
     };
 
     const mainLoop = () => {
+      processCommands();
       enqueue();
       send(activeMessages());
       run();
@@ -106,7 +121,7 @@ export class PlayerService extends EventEmitter {
     const run = () => {
       setTimeout(() => {
         mainLoop();
-      }, 5);
+      }, 50);
     };
 
     run();
