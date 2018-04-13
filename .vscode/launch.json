@@ -11,7 +11,10 @@
       "program": "${workspaceFolder}/src/index.ts",
       "outFiles": [ "${workspaceFolder}/dist/**/*.js" ],
       "args": [
-        "--help",
+        "-k",
+        "134.221.20.200:3501",
+        "-s",
+        "134.221.20.200:3502",
         "logs",
         "-x",
         "schemas"

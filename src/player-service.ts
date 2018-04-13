@@ -44,7 +44,7 @@ export class PlayerService extends EventEmitter {
   }
 
   private startEventLoop() {
-    let eventQueue: { timestamp: number; message: ILogMessage }[] = [];
+    let eventQueue: Array<{ timestamp: number; message: ILogMessage }> = [];
 
     const processCommands = () => {
       if (commandQueue.length === 0) {
