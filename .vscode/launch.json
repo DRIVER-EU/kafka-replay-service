@@ -11,6 +11,7 @@
       "program": "${workspaceFolder}/src/index.ts",
       "outFiles": [ "${workspaceFolder}/dist/**/*.js" ],
       "args": [
+        "--help",
         "logs",
         "-x",
         "schemas"

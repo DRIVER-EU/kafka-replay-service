@@ -19,7 +19,7 @@ export class CommandLineInterface {
       name: 'help',
       alias: 'h',
       type: Boolean,
-      typeLabel: '[underline]{Boolean}',
+      typeLabel: '{underline Boolean}',
       description: 'Show help text'
     },
     {
@@ -27,7 +27,7 @@ export class CommandLineInterface {
       alias: 'p',
       type: Number,
       defaultValue: 8200,
-      typeLabel: '[underline]{Number}',
+      typeLabel: '{underline Number}',
       description: 'Endpoint port, e.g. http://localhost:PORT/time'
     },
     {
@@ -35,7 +35,7 @@ export class CommandLineInterface {
       alias: 'k',
       type: String,
       defaultValue: 'localhost:3501',
-      typeLabel: '[underline]{String}',
+      typeLabel: '{underline String}',
       description: 'Kafka broker host, e.g. localhost:3501'
     },
     {
@@ -44,7 +44,7 @@ export class CommandLineInterface {
       type: String,
       defaultValue: './logs',
       defaultOption: true,
-      typeLabel: '[underline]{String}',
+      typeLabel: '{underline String}',
       description: 'Location of the log files, default ./logs'
     },
     {
@@ -52,7 +52,7 @@ export class CommandLineInterface {
       alias: 's',
       type: String,
       defaultValue: 'localhost:3502',
-      typeLabel: '[underline]{String}',
+      typeLabel: '{underline String}',
       description: 'Schema registry, e.g. localhost:3502'
     },
     {
@@ -60,8 +60,9 @@ export class CommandLineInterface {
       alias: 'x',
       type: String,
       defaultValue: '',
-      typeLabel: '[underline]{String}',
-      description: 'Folder where the schemas are stored, e.g. "schemas". If specified, automatically publish schemas to schema registry.'
+      typeLabel: '{underline String}',
+      description:
+        'Folder where the schemas are stored, e.g. "schemas". If specified, automatically publish schemas to schema registry.'
     }
   ];
 

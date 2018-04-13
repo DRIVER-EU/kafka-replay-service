@@ -25,15 +25,11 @@
       "description": "Get message details"
     }
   ],
-  "schemes": [
-    "http"
-  ],
+  "schemes": [ "http" ],
   "paths": {
     "/sessions": {
       "get": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": [ "sessions" ],
         "summary": "Get all the sessions",
         "description": "Get all the available session names.",
         "responses": {
@@ -54,9 +50,7 @@
     },
     "/sessions/{sessionID}/topics": {
       "get": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": [ "sessions" ],
         "summary": "Get all the topics in a session",
         "parameters": [
           {
@@ -81,9 +75,7 @@
             "description": "Invalid tag value"
           }
         },
-        "produces": [
-          "application/json"
-        ]
+        "produces": [ "application/json" ]
       }
     },
     "/sessions/{sessionID}/": {
@@ -97,9 +89,7 @@
         }
       ],
       "get": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": [ "sessions" ],
         "summary": "Get all the messages in a session",
         "responses": {
           "200": {
@@ -115,14 +105,10 @@
             "description": "Invalid tag value"
           }
         },
-        "produces": [
-          "application/json"
-        ]
+        "produces": [ "application/json" ]
       },
       "post": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": [ "sessions" ],
         "summary": "Play all the messages in the session",
         "description": "Based on the timestamp of the original message, and the current (simulation) time, the messages are published in the original order.",
         "responses": {
@@ -153,9 +139,7 @@
         }
       ],
       "get": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": [ "sessions" ],
         "summary": "Get all the messages in a session topic",
         "responses": {
           "200": {
@@ -171,14 +155,10 @@
             "description": "Invalid tag value"
           }
         },
-        "produces": [
-          "application/json"
-        ]
+        "produces": [ "application/json" ]
       },
       "post": {
-        "tags": [
-          "sessions"
-        ],
+        "tags": [ "sessions" ],
         "summary": "Play all the messages in the session topic",
         "description": "Based on the timestamp of the original message, and the current (simulation) time, the messages are published in the original order.",
         "responses": {
@@ -202,9 +182,7 @@
         }
       ],
       "get": {
-        "tags": [
-          "messages"
-        ],
+        "tags": [ "messages" ],
         "summary": "Get a specific message",
         "responses": {
           "200": {
@@ -222,9 +200,7 @@
         }
       },
       "post": {
-        "tags": [
-          "messages"
-        ],
+        "tags": [ "messages" ],
         "summary": "Publish the message",
         "responses": {
           "200": {
@@ -238,9 +214,7 @@
     },
     "/reset": {
       "delete": {
-        "tags": [
-          "player"
-        ],
+        "tags": [ "player" ],
         "summary": "Stop playing and remove all messages from the queue",
         "responses": {
           "200": {
