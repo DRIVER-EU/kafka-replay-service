@@ -59,9 +59,13 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.0.tgz#5a7306e367c539b9f6543499de8dd519fac37a8b"
 
-"@types/node@*", "@types/node@^9.4.7":
+"@types/node@*":
   version "9.6.2"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.2.tgz#e49ac1adb458835e95ca6487bc20f916b37aff23"
+
+"@types/node@^9.6.4":
+  version "9.6.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-9.6.4.tgz#0ef7b4cfc3499881c81e0ea1ce61a23f6f4f5b42"
 
 "@types/serve-static@*":
   version "1.13.1"
@@ -70,7 +74,7 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
-"@types/socket.io@^1.4.31":
+"@types/socket.io@^1.4.33":
   version "1.4.33"
   resolved "https://registry.yarnpkg.com/@types/socket.io/-/socket.io-1.4.33.tgz#41e7e30e858b643519a139b8c93280390ccdff8d"
   dependencies:
@@ -428,7 +432,7 @@ chalk@^2.3.2:
     escape-string-regexp "^1.0.5"
     supports-color "^5.3.0"
 
-chokidar@^2.0.2:
+chokidar@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-2.0.3.tgz#dcbd4f6cbb2a55b4799ba8a840ac527e5f4b1176"
   dependencies:
@@ -496,7 +500,7 @@ command-line-args@^5.0.2:
     lodash.camelcase "^4.3.0"
     typical "^2.6.1"
 
-command-line-usage@^5.0.2:
+command-line-usage@^5.0.4:
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/command-line-usage/-/command-line-usage-5.0.4.tgz#d6d910c249d5c39e908af23b1aa769487de2f74d"
   dependencies:
@@ -1500,9 +1504,9 @@ node-pre-gyp@^0.6.39:
     tar "^2.2.1"
     tar-pack "^3.4.0"
 
-node-test-bed-adapter@^0.3.12:
-  version "0.3.13"
-  resolved "https://registry.yarnpkg.com/node-test-bed-adapter/-/node-test-bed-adapter-0.3.13.tgz#c7ba6d94abaaaa89a4ceb582a16aad8d8c9e80ee"
+node-test-bed-adapter@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/node-test-bed-adapter/-/node-test-bed-adapter-0.4.0.tgz#8d01685ccb9ad3602e60313c8581ffdb0ef18bf3"
   dependencies:
     "@types/bluebird" "^3.5.20"
     "@types/kafka-node" "^2.0.6"
@@ -1992,7 +1996,7 @@ socket.io-parser@~3.2.0:
     debug "~3.1.0"
     isarray "2.0.1"
 
-socket.io@^2.0.4:
+socket.io@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/socket.io/-/socket.io-2.1.0.tgz#de77161795b6303e7aefc982ea04acb0cec17395"
   dependencies:
@@ -2090,9 +2094,9 @@ supports-color@^5.3.0:
   dependencies:
     has-flag "^3.0.0"
 
-swagger-ui-express@^2.0.15:
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/swagger-ui-express/-/swagger-ui-express-2.0.15.tgz#fba85a357b40c0d629e942537199987b8085587d"
+swagger-ui-express@^3.0.6:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/swagger-ui-express/-/swagger-ui-express-3.0.6.tgz#00a89dd76ab0638b32a61328d625cd197fbec3e0"
 
 table-layout@^0.4.3:
   version "0.4.3"
@@ -2191,7 +2195,7 @@ type-is@~1.6.15, type-is@~1.6.16:
     media-typer "0.3.0"
     mime-types "~2.1.18"
 
-typescript@^2.7.2:
+typescript@^2.8.1:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.8.1.tgz#6160e4f8f195d5ba81d4876f9c0cc1fbc0820624"
 
@@ -2307,7 +2311,7 @@ ws@~3.3.1:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-xml2json@^0.11.0:
+xml2json@^0.11.2:
   version "0.11.2"
   resolved "https://registry.yarnpkg.com/xml2json/-/xml2json-0.11.2.tgz#70ddd234fd7818312cc58455cab8457b5bcc7c52"
   dependencies:
