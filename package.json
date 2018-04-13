@@ -1,6 +1,6 @@
 {
   "name": "kafka-replay-service",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A simple service to play (publish) a sequence of messages to a Kafka topic.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -14,7 +14,16 @@
     "type": "git",
     "url": "git+https://github.com/DRIVER-EU/kafka-replay-service.git"
   },
-  "keywords": [ "Apache", "Kafka", "play", "publish", "produce", "replay", "node", "vue" ],
+  "keywords": [
+    "Apache",
+    "Kafka",
+    "play",
+    "publish",
+    "produce",
+    "replay",
+    "node",
+    "vue"
+  ],
   "author": "Erik Vullings <erik.vullings@gmail.com> (http://www.tno.nl)",
   "license": "MIT",
   "bugs": {
