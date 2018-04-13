@@ -10,5 +10,4 @@ package-lock.json
 yarn.lock
 tsconfig.json
 tslint.json
-*.json
 *.logs
