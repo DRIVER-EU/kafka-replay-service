@@ -1,0 +1,67 @@
+<div class="column-layout">
+    <div class="sessions">
+        <v-list two-line class="column-list sessions-list">
+            <v-subheader inset>Sessions</v-subheader>
+            <v-list-tile avatar v-for="session in sessions" :key="session" @click="selectSession(session)">
+                <v-list-tile-avatar>
+                    <!-- <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon> -->
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                    <v-list-tile-title>{{ session }}</v-list-tile-title>
+                    <!-- <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title> -->
+                </v-list-tile-content>
+                <v-list-tile-action>
+                    <v-btn icon ripple @click.delegate="playSession(session)">
+                        <v-icon color="grey lighten-1">play_circle_filled</v-icon>
+                    </v-btn>
+                </v-list-tile-action>
+            </v-list-tile>
+        </v-list>
+    </div>
+    <div class="topics" v-if="topics.length>0">
+        <v-list class="column-list topics-list">
+            <v-subheader inset>Topics</v-subheader>
+            <v-list-tile avatar v-for="topic in topics" :key="topic" @click="selectTopic(topic)">
+                <v-list-tile-avatar>
+                    <!-- <v-icon :class="[item.iconClass]">{{ item.icon }}</v-icon> -->
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                    <v-list-tile-title>{{ topic }}</v-list-tile-title>
+                    <!-- <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title> -->
+                </v-list-tile-content>
+                <v-list-tile-action>
+                    <v-btn icon ripple @click.delegate="playTopic(topic)">
+                        <v-icon color="grey lighten-1">play_circle_filled</v-icon>
+                    </v-btn>
+                </v-list-tile-action>
+            </v-list-tile>
+        </v-list>
+    </div>
+    <div class="messages" v-if="messages.length>0">
+        <v-list two-line subheader class="column-list messages-list">
+            <v-subheader inset>Messages</v-subheader>
+            <v-data-iterator row wrap :items="messages" :rows-per-page-items="rowsPerPageItems" hide-actions :pagination.sync="pagination">
+                <v-list-tile slot="item" slot-scope="props" @click="selectMessage(props.item)">
+                    <v-list-tile-content>
+                        <v-list-tile-title>{{ props.item.label }}</v-list-tile-title>
+                        <v-list-tile-sub-title>{{ props.item.value.owner }} - {{ props.item.timestampMsec }}</v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action>
+                        <v-btn icon ripple @click.delegate="playMessage(props.item)">
+                            <v-icon color="grey lighten-1">play_circle_filled</v-icon>
+                        </v-btn>
+                    </v-list-tile-action>
+                </v-list-tile>
+            </v-data-iterator>
+            <!-- <v-pagination  :length="5"></v-pagination> -->
+            <v-pagination v-if="messages.length>10" :length="4" v-model="pagination.page" prev-icon="mdi-menu-left" next-icon="mdi-menu-right"></v-pagination>
+        </v-list>
+    </div>
+
+    <div class="message" v-if="selectedMessage.id">
+        <v-container>
+            <vue-json-pretty :data="selectedMessage" >
+            </vue-json-pretty>
+        </v-container>
+    </div>
+</div>

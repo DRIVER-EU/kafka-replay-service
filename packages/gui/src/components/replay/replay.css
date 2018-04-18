@@ -1,0 +1,23 @@
+.column-layout {
+  display: grid; /* 1 */
+  grid-template-columns: 1fr 1fr 1fr 3fr; /* 2 */
+  grid-template-rows: 100vh; /* 3 */
+}
+
+.column-list {
+  height: 100%;
+}
+
+.sessions-list {
+  background: #F6E39E !important;
+}
+
+.topics-list {
+  background: #FFFEE8 !important;
+}
+
+.messages-list {
+  background: #E1EABF !important;
+}
+
+

@@ -25,6 +25,7 @@ export class App {
     this.port = options.port;
     this.app = express();
     this.app.use(cors());
+    this.app.use(express.static('public'));
     this.server = createServer(this.app);
     this.io = socketIO(this.server);
     this.playerService = new PlayerService(options);
