@@ -628,7 +628,7 @@
     axios "^0.17.1"
     vuetify "^1.0.13"
 
-"@csnext/cs-core@0.0.21":
+"@csnext/cs-core@0.0.20":
   version "0.0.20"
   resolved "https://registry.yarnpkg.com/@csnext/cs-core/-/cs-core-0.0.20.tgz#755e51238269673fdeb693ca48eae1403e8f7884"
   dependencies:

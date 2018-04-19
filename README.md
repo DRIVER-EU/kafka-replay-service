@@ -22,7 +22,7 @@ Via websockets, your client may receive a `session_update` notification that som
 The message file's filename convention informs us when to send it:
 - It is just a name: you can publish them step-by-step or all in one go
 - It is in the format 12345... (only numbers, or, in Regex /d+): it represents the offset in msec since you pressed play
-- Optionally, the previous format may be augmented by a textual description, such as 0001_Init_msg, in which case the 'Init msg' is used as the label of the message in the GUI.
+- Optionally, the previous format may be augmented by a textual description, such as 0001_Initialize_msg, in which case the 'Initialize msg' is used as the label of the message in the GUI.
 
 ## Extension
 Finally, the message file's extension informs us how to read it. We support the following inputs:
@@ -43,22 +43,30 @@ Finally, if there is a time message signal on the test-bed, playback messages ba
 ## Build instructions
 
 From the command prompt, install all dependencies using `npm i`. Under Windows, using Node v9, you may run into an installation error when installing `node-expat`. In that case, you can try the following:
-```
+
+```console
 npm i -g node-gyp
 cd node_modules\node-expat
 node-gyp rebuild
 ```
+
 Optionally, you may also need to install the npm production tools, from an admin prompt: `npm install --global --production windows-build-tools`.
 
 To build the application, you can do the following:
 
-```
+```console
 npm install
 npm run build
 ```
 
-This will build both service and gui application and copies the created website into the service `public` folder. You can now start the app using:
+This will build both service and GUI application and copies the created website into the service `public` folder. You can now start the app using:
 
-```
+```console
 npm start
 ```
+
+**Please note that the service requires a local `logs` folder that contains the to be transmitted message logs. You can generate a log file by using the Kafka Topics UI and downloading a topic, or by using the [Kafka-topics-logger](https://www.npmjs.com/package/kafka-topics-logger).**
+
+## Development instructions
+
+In order to develop the app, use `npm run dev`.
