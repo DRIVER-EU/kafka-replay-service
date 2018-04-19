@@ -5,11 +5,11 @@ import './assets/example.css'
 
 export const project: Project = {
   header: {
-    title: "Driver Replay Service",
-    logo: "./images/driver.png"    
+    title: "Replay Service",
+    logo: "./images/driver.png"
   },
   navigation: {
-    style: "tabs",  
+    style: "tabs",
   },
   datasources: {
     testdata: {
@@ -33,13 +33,13 @@ export const project: Project = {
       success: "#4CAF50",
       warning: "#FFC107"
     }
-  },  
+  },
   menus: [
     <IMenu>{
       id: "stop",
       icon: "stop",
       title: "Stop",
-      enabled: true,      
+      enabled: true,
       visible: true
     }
   ],
@@ -48,9 +48,9 @@ export const project: Project = {
         title: "Player",
         icon: "assignment",
         path: '/',
-        layout: 'single',    
+        layout: 'single',
         options: <IDashboardOptions>{ editButton: false, class: 'column-layout'},
         widgets: [ { component: Replay, datasource: 'testdata'}]
-      } 
+      }
     ]
   }
