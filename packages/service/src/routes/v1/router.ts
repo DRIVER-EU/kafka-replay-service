@@ -33,5 +33,5 @@ export const setupRoutes = (app: Application) => {
 
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   app.use('/api/v1', router);
-  app.use('/', (req, res) => res.redirect('/api-docs'));
+  // app.use('/', (req, res) => res.redirect('/api-docs'));
 };
