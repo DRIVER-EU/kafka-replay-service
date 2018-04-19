@@ -10,6 +10,7 @@ import {SessionsApi } from './datasources/swagger'
 Vue.use(Vuetify);
 import { project } from './driver-project';
 import { BaseAPI } from './datasources/swagger';
+import './assets/driver.css';
 // import { project } from './defaultproject';
 
 Vue.config.productionTip = false

@@ -1,0 +1,9 @@
+.content {
+    padding: 0 !important;
+    margin-top:64px;
+    margin-bottom:-64px;
+}
+
+html {
+    overflow: hidden;
+}

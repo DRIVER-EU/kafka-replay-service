@@ -1,15 +1,21 @@
 .column-layout {
   display: grid; /* 1 */
   grid-template-columns: 1fr 1fr 1fr 3fr; /* 2 */
-  grid-template-rows: 100vh; /* 3 */
+  grid-template-rows: 100vh; /* 3 */  
 }
 
 .column-list {
   height: 100%;
+  overflow-y: auto;
 }
 
 .sessions-list {
   background: #F6E39E !important;
+}
+
+.message {
+    height: 100%;
+    overflow-y: scroll;
 }
 
 .topics-list {

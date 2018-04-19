@@ -40,6 +40,7 @@
     <div class="messages" v-if="messages.length>0">
         <v-list two-line subheader class="column-list messages-list">
             <v-subheader inset>Messages</v-subheader>
+            <v-pagination v-if="messages.length>10" v-model="pagination.page"></v-pagination>
             <v-data-iterator row wrap :items="messages" :rows-per-page-items="rowsPerPageItems" hide-actions :pagination.sync="pagination">
                 <v-list-tile slot="item" slot-scope="props" @click="selectMessage(props.item)">
                     <v-list-tile-content>
@@ -54,7 +55,7 @@
                 </v-list-tile>
             </v-data-iterator>
             <!-- <v-pagination  :length="5"></v-pagination> -->
-            <v-pagination v-if="messages.length>10" :length="4" v-model="pagination.page" prev-icon="mdi-menu-left" next-icon="mdi-menu-right"></v-pagination>
+           
         </v-list>
     </div>
 
