@@ -10,7 +10,7 @@ import { uuid4 } from 'node-test-bed-adapter';
 export const messageQueue: ILogMessage[] = [];
 
 /** For passing down messages from the controllers to the player */
-export const commandQueue: Symbol[] = [];
+export const commandQueue: symbol[] = [];
 
 export const resetCommand = Symbol('reset');
 
@@ -100,6 +100,7 @@ export class Message extends EventEmitter implements ILogMessage {
     }
     switch (ext.toLowerCase()) {
       default:
+        // tslint:disable-next-line:no-console
         console.warn(`Unknown file extension (${ext})! Only XML and JSON are accepted. Skipping.`);
         break;
       case '.xml':
@@ -115,6 +116,7 @@ export class Message extends EventEmitter implements ILogMessage {
   private loadXmlMessage(filename: string) {
     fs.readFile(filename, 'utf8', (err, data) => {
       if (err) {
+        // tslint:disable-next-line:no-console
         console.error(`Error reading file ${filename}: ${err}`);
       } else {
         this.value = JSON.parse(parser.toJson(data));
@@ -126,6 +128,7 @@ export class Message extends EventEmitter implements ILogMessage {
   private loadJsonMessage(filename: string) {
     fs.readFile(filename, 'utf8', (err, data) => {
       if (err) {
+        // tslint:disable-next-line:no-console
         console.error(`Error reading file ${filename}: ${err}`);
       } else {
         this.value = JSON.parse(data);

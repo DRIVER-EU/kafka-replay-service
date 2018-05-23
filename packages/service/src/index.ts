@@ -13,14 +13,19 @@ export interface ICommandOptions {
   help?: boolean;
 }
 
+export interface IOptionDefinition extends OptionDefinition {
+  typeLabel: string;
+  description: string;
+}
+
 export class CommandLineInterface {
-  public static optionDefinitions: OptionDefinition[] = [
+  public static optionDefinitions: IOptionDefinition[] = [
     {
       name: 'help',
       alias: 'h',
       type: Boolean,
       typeLabel: '{underline Boolean}',
-      description: 'Show help text'
+      description: 'Show help text',
     },
     {
       name: 'port',
@@ -28,7 +33,7 @@ export class CommandLineInterface {
       type: Number,
       defaultValue: 8200,
       typeLabel: '{underline Number}',
-      description: 'Endpoint port, e.g. http://localhost:PORT/time'
+      description: 'Endpoint port, e.g. http://localhost:PORT/time',
     },
     {
       name: 'kafkaHost',
@@ -36,7 +41,7 @@ export class CommandLineInterface {
       type: String,
       defaultValue: 'localhost:3501',
       typeLabel: '{underline String}',
-      description: 'Kafka broker host, e.g. localhost:3501'
+      description: 'Kafka broker host, e.g. localhost:3501',
     },
     {
       name: 'logFolder',
@@ -45,7 +50,7 @@ export class CommandLineInterface {
       defaultValue: './logs',
       defaultOption: true,
       typeLabel: '{underline String}',
-      description: 'Location of the log files, default ./logs'
+      description: 'Location of the log files, default ./logs',
     },
     {
       name: 'schemaRegistry',
@@ -53,7 +58,7 @@ export class CommandLineInterface {
       type: String,
       defaultValue: 'localhost:3502',
       typeLabel: '{underline String}',
-      description: 'Schema registry, e.g. localhost:3502'
+      description: 'Schema registry, e.g. localhost:3502',
     },
     {
       name: 'schemaFolder',
@@ -61,9 +66,8 @@ export class CommandLineInterface {
       type: String,
       defaultValue: '',
       typeLabel: '{underline String}',
-      description:
-        'Folder where the schemas are stored, e.g. "schemas". If specified, automatically publish schemas to schema registry.'
-    }
+      description: 'If specified, automatic publish schema\apos;s to registry from supplied folder.',
+    },
   ];
 
   public static sections = [
@@ -86,33 +90,33 @@ export class CommandLineInterface {
         - [Kafka TOPICS UI log file].json
 
     The API is documented using OpenAPI/Swagger at http://localhost:[port]/api-docs/
-    `
+    `,
     },
     {
       header: 'Options',
-      optionList: CommandLineInterface.optionDefinitions
+      optionList: CommandLineInterface.optionDefinitions,
     },
     {
       header: 'Examples',
       content: [
         {
           desc: '01. Start the service.',
-          example: `$ ${npmPackage.name}`
+          example: `$ ${npmPackage.name}`,
         },
         {
           desc: '02. Start the service, sending out time messages every second.',
-          example: `$ ${npmPackage.name} -i 1000`
+          example: `$ ${npmPackage.name} -i 1000`,
         },
         {
           desc: '03. Start the service on port 8080.',
-          example: `$ ${npmPackage.name} - 8080`
-        }
-      ]
-    }
+          example: `$ ${npmPackage.name} - 8080`,
+        },
+      ],
+    },
   ];
 }
 
-const options: ICommandOptions = commandLineArgs(CommandLineInterface.optionDefinitions);
+const options = commandLineArgs(CommandLineInterface.optionDefinitions) as ICommandOptions;
 
 if (options.help) {
   // tslint:disable-next-line:no-var-requires
