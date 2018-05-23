@@ -16,6 +16,8 @@ Messages that belong to each other are added to the same session. The topic name
 
 The REST API is documented using OpenAPI/Swagger at [http://[HOST]:[PORT]/api-docs/](http://localhost:8200/api-docs).
 
+The GUI is available at [http://[HOST]:[PORT]/api-docs/](http://localhost:8200).
+
 Via websockets, your client may receive a `session_update` notification that something has changed, after which you should GET all session data again.
 
 ## Filename convention for single messages
