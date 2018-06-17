@@ -40,6 +40,14 @@ In case we are dealing with multiple topics, the user can unselect specific topi
 
 Finally, if there is a time message signal on the test-bed, playback messages based on the external clock. The scenario duration is used to determine when to send a message.
 
+## Installation instructions
+
+```console
+npm i -g kafka-replay-service
+```
+
+To run the application, execute `kafka-replay-service` from a folder that contains log files as outlined above, otherwise the service will be empty.
+
 ## Build instructions
 
 From the command prompt, install all dependencies using `npm i`. Under Windows, using Node v9, you may run into an installation error when installing `node-expat`. In that case, you can try the following:
