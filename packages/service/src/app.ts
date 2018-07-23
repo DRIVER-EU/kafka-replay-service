@@ -30,11 +30,13 @@ export class App {
     this.io = socketIO(this.server);
     this.playerService = new PlayerService(options);
     this.fws.on('ready', () => {
-      if (this.started) { return; }
+      if (this.started) {
+        return;
+      }
       this.started = true;
       this.fws.on('updated', () => this.io.emit('session_update', this.fws.getAllSessions()));
-      // this.playerService.connect();
-      // log(this.fws.getAllSessions().map(s => s.filename));
+      this.playerService.connect();
+      // log(this.fws.getAllSessions().map((s) => s.filename));
       // const f = this.fws.getAllSessions()[0].filename;
       // log(this.fws.getMessage(f));
       setupRoutes(this.app);
