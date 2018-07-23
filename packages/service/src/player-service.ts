@@ -25,13 +25,18 @@ export class PlayerService extends EventEmitter {
       produce: [],
       logging: {
         logToConsole: LogLevel.Warn,
-        logToKafka: LogLevel.Error
-      }
+        logToKafka: LogLevel.Error,
+      },
     });
     this.adapter.on('ready', () => {
       this.subscribe();
       this.startEventLoop();
       log.info('Consumer is connected');
+    });
+    this.adapter.on('error', (e) => {
+      // tslint:disable-next-line:no-console
+      console.error(e);
+      process.exit(1);
     });
   }
 
