@@ -77,9 +77,10 @@ export class CommandLineInterface {
 
     ${npmPackage.description}
 
-    Replay logged messages that are stored inside a, potentially mounted, folder. The folder
-    layout is using the following convention, so you can either write your own message,
-    one message per file, or, alternatively, use a log file from Landoop's Kafka TOPICS UI:
+    Replay logged messages that are stored inside a, potentially mounted, folder.
+    The folder layout is using the following convention, so you can either write
+    your own message, one message per file, or, alternatively, use a log file
+    from Landoop's Kafka TOPICS UI:
 
     ROOT
     - logs
@@ -104,12 +105,12 @@ export class CommandLineInterface {
           example: `$ ${npmPackage.name}`,
         },
         {
-          desc: '02. Start the service, sending out time messages every second.',
-          example: `$ ${npmPackage.name} -i 1000`,
+          desc: '02. Start the service, specifying kafka host, schema registry, logs and schemas folder.',
+          example: `$ ${npmPackage.name} -k localhost:3501 -s localhost:3502 -f ./logs -x ./schemas`,
         },
         {
-          desc: '03. Start the service on port 8080.',
-          example: `$ ${npmPackage.name} - 8080`,
+          desc: '02. Start the service on port 8080.',
+          example: `$ ${npmPackage.name} -p 8080`,
         },
       ],
     },
