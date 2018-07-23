@@ -34,14 +34,14 @@
   },
   "homepage": "https://github.com/DRIVER-EU/kafka-replay-service#readme",
   "dependencies": {
-    "chokidar": "^2.0.3",
+    "chokidar": "^2.0.4",
     "command-line-args": "^5.0.2",
     "command-line-usage": "^5.0.5",
     "cors": "^2.8.4",
     "express": "^4.16.3",
-    "node-test-bed-adapter": "^0.4.1",
+    "node-test-bed-adapter": "^0.4.5",
     "socket.io": "^2.1.1",
-    "swagger-ui-express": "^3.0.9",
+    "swagger-ui-express": "^3.0.10",
     "xml2json": "^0.11.2"
   },
   "devDependencies": {
@@ -49,11 +49,11 @@
     "@types/command-line-args": "^5.0.0",
     "@types/command-line-usage": "^5.0.1",
     "@types/cors": "^2.8.4",
-    "@types/express": "^4.11.1",
-    "@types/node": "^10.1.2",
-    "@types/socket.io": "^1.4.33",
+    "@types/express": "^4.16.0",
+    "@types/node": "^10.5.2",
+    "@types/socket.io": "^1.4.36",
     "@types/xml2json": "^0.10.0",
-    "tsc-watch": "^1.0.21",
-    "typescript": "^2.8.3"
+    "tsc-watch": "^1.0.26",
+    "typescript": "^2.9.2"
   }
 }
