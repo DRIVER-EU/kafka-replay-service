@@ -14,17 +14,16 @@ export class PlayerService extends EventEmitter {
     this.adapter = new TestBedAdapter({
       kafkaHost: options.kafkaHost,
       schemaRegistry: options.schemaRegistry,
-      wrapUnions: 'auto',
+      // Messages saved by the avro-topics-logger or the Kafka-topics ui use wrapped unions.
+      wrapUnions: true,
       schemaFolder: options.schemaFolder,
       autoRegisterSchemas: options.schemaFolder ? true : false,
       fetchAllSchemas: true,
       clientId: 'kafka-replay-service',
-      consume: [
-        // { topic: ConfigurationTopic }
-      ],
+      consume: [],
       produce: [],
       logging: {
-        logToConsole: LogLevel.Warn,
+        logToConsole: LogLevel.Info,
         logToKafka: LogLevel.Error,
       },
     });

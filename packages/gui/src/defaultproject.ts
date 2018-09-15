@@ -1,9 +1,9 @@
-import {  IDashboardOptions,  IWidgetOptions,  Project,  ILayoutManagerConfig, IMenu, INotification} from "@csnext/cs-core";
-import { LayoutManager, MdWidget, AppState } from "@csnext/cs-client";
+import {  IDashboardOptions,  IProject,  IMenu, INotification} from "@csnext/cs-core";
+import { MdWidget, AppState } from "@csnext/cs-client";
 import DataSource from "./components/DataSource.vue";
 import './assets/example.css'
 
-export const project: Project = {
+export const project: IProject = {
   header: {
     title: "Test project",
     logo: "./images/logo.png",
