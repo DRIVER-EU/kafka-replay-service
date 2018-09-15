@@ -1,6 +1,6 @@
 {
   "name": "kafka-replay-service",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "A simple service to play (publish) a sequence of messages to a Kafka topic.",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
