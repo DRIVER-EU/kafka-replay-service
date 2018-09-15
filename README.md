@@ -1,11 +1,13 @@
 # Kafka-Replay-Service
 
-A simple REST (+websockets) service to play (publish) a sequence of messages to a Kafka topic. The messages you can play are based on their location in a folder (following the convention over configuration principle). The folder is actively watched, and new files will be automatically available.
+A simple REST (+web sockets) service to play (publish) a sequence of messages to a Kafka topic. The messages you can play are based on their location in a folder (following the convention over configuration principle). The folder is actively watched, and new files will be automatically available.
 
 ![screenshot](./img/screenshot.png)
 
-Replay logged messages that are stored inside a, potentially mounted, folder. The folder layout is using the following convention, so you can either write your own message, one message per file, or, alternatively, use a log file from Landoop's Kafka TOPICS UI:
+Replay logged messages that are stored inside a, potentially mounted, folder. The folder layout is using the following convention, so you can either write your own message, one message per file, or, alternatively, use a log file from Landoop's Kafka TOPICS UI or our own [kafka-topics-logger](https://www.npmjs.com/package/kafka-topics-logger). Please
+note that the log files must be in JSON, using wrapped unions, to avoid ambiguity:
 
+```console
 ROOT
 - logs
   - SESSION_NAME
@@ -13,21 +15,26 @@ ROOT
       - TIMESTAMP_FILENAME
   - SESSION_NAME2
     - [Kafka TOPICS UI log file].json
+```
 
 Messages that belong to each other are added to the same session. The topic name is the name of the topic to publish the messages to. When a TIMESTAMP (a number in msec) is set, it is used to send the message after TIMESTAMP msec.
 
 The REST API is documented using OpenAPI/Swagger at [http://[HOST]:[PORT]/api-docs/](http://localhost:8200/api-docs).
 
-Via websockets, your client may receive a `session_update` notification that something has changed, after which you should GET all session data again.
+Via web sockets, your client may receive a `session_update` notification that something has changed, after which you should GET all session data again.
 
 ## Filename convention for single messages
+
 The message file's filename convention informs us when to send it:
+
 - It is just a name: you can publish them step-by-step or all in one go
 - It is in the format 12345... (only numbers, or, in Regex /d+): it represents the offset in msec since you pressed play
 - Optionally, the previous format may be augmented by a textual description, such as 0001_Initialize_msg, in which case the 'Initialize msg' is used as the label of the message in the GUI.
 
 ## Extension
+
 Finally, the message file's extension informs us how to read it. We support the following inputs:
+
 - .xml, for XML messages
 - .json or .geojson for JSON and GeoJSON messages, respectively.
 
