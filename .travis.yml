@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+- '8'
+sudo: required
+services:
+- docker
+if: branch IN (master, develop)
+install:
+- npm install
+- npm install -g typescript
+script:
+- echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+- docker build -t drivereu/kafka-replay-service:$TRAVIS_BRANCH-latest .
+- if [ $TRAVIS_BRANCH == "master" ]; then docker tag drivereu/kafka-replay-service:$TRAVIS_BRANCH-latest
+  drivereu/kafka-replay-service:latest; fi
+- if [ ! -z $TRAVIS_TAG ]; then docker tag drivereu/kafka-replay-service:$TRAVIS_BRANCH-latest
+  drivereu/kafka-replay-service:$TRAVIS_TAG; fi
+- docker push drivereu/kafka-replay-service
+env:
+  global:
+  - secure: o6w305ZVH49YXuuAQwp5ayfC/wsbayjqwdBfgRCc3Y4fCv1xxyqJxC4eH1s4XeNF/qkVEolBuHxdYS4+sXM5SnZqGI+FaLkVPPlUQTNXiVVu9NmZQTRJWysKg1p7V6/7IWKmHAF2lxcXgKsfbEC/kePhcKevqtlXp9xdaD0i55oB4UbnBwhNBq6AYpOVfI2szDSniVPmwog79wZEEEAotb6R8fDNL5FSQIWQChXXsuy5K6JgPJsVx0U6K6ZS9vdjdb1+Xa9W/B6CVoDHbotHMpknVsFjkyhMkDCfKKQuMHj/I99aEyGU8jSZimiXX72bqdQy9mpkEHJ+bmAqq7Heya5MD4ORRt83GCyYYoByu4kvsB8Z93oQ8rIi4hdqK8ayJoK6XzFCVZLNumCZU3CFwleSglgDCSynk6c2Hmcmvno0fKVg7uyLAQExHgxwpRFG+sR5c2jXVNASw8Tax4npf1H+vpSIdV0ATY87ZUDPUmMGx2o4AHH2n8We6EdbdfY8teDZYfdFiMNcfK3oVoBvb+n0i96M+st2indO5E/7ekdd/g2J8FUiixNmNvA12IdZBijk353MteZ4vHE58cbW793aIE2NLNxBXDhl1imHOEQ3E09ZXfztgYg4ZrpGHfWe3XAVi9Cgyqvw4bGQPhB3pQ3avjg+4hCSrFkcIZUCK4E=
+  - secure: SdIimsaYJpC5GkdZxTIxrGg+V3vmqz8LrMxFdg7EW7LM5hCzOfqe/uRstzCmRIKzk8O4rse0p1SrQA3Fn+wbGnrSM0efAwamjI3jXc/kNguVxO/HVIzN7Ch/p0DalVcT2t4TYOo1vqafMVjdPYnu7D1OrzqebEYE0HEloDac5cVpRaCpcZPsEGXwpCLOly4dDxhhi1m2jbdcUrjsa7vsXV1IliIQRw9L9O81RSPmFkzpm6CK8HkbKDrsGM7/TNtHtwjfL+42tmNIUa2oVc0+aAR03HKPQRGQGHh49l4ABVC++CAlUTCmi3bASyKQf5BloC5OKtxbAzD1izpdCSDE/Vp3w04nRW9rteTHwPPAamZWL1YYoySFWurl9wk8I3RZdG8v4M7C3Tc3FeTOkOb/RF7ssMsUz9OO8zOwxxJ+2dkZgzhy0oE3wbX0tjVQEuaI6O+WFruFCNY2PkF0hNXqPD/wGS5zVWP9lWK43tFZXDFPbodm91THw9+WNIcl6nkgDpS232IEZP61+ODtDdmyMRNVH+2Hxvy5dulDcZiL/+1Hw/IExn6LpYhxWv4+ctgQO12/wkjNAV0CqQIDjN/FKqQpZyF60wdg4NAFQDtjNocWLdPOIvtpbjVQvcDQ8zVtDmzXyirN1XQx7EcaVE2g7SVgjCWmWCJbVLA1GetiOQU=
