@@ -2,7 +2,6 @@ FROM node:alpine AS builder
 RUN mkdir -p /src
 COPY . /src/
 WORKDIR /src
-RUN npm i -g parcel-bundler
 RUN npm i
 WORKDIR /src/packages/gui
 RUN npm run build
