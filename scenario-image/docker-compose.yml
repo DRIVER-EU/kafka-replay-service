@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  kafka_replay_service:
+    image: drivereu/kafka-replay-service:0.0.1
+    # mount the volume into the replay service :nocopy is crucial to prevent overwriting the mounted data with an empty dir
+    volumes:
+      - scenario-logs-example:/where/you/want/the/logs/to/be/mounted:nocopy
+
+  example_scenario_logs:
+    image: drivereu/scenario-logs-example:0.0.1
+    # Dockerfile copied logs to /scenario-logs in the image, so can be mounted from there into the named volume
+    volumes:
+      - scenario-logs-example:/scenario-logs
+
+# all named volumes must be defined here
+volumes:
+  scenario-logs-example:
