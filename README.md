@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/DRIVER-EU/kafka-replay-service.svg?branch=master)](https://travis-ci.com/DRIVER-EU/kafka-replay-service)
+
 # Kafka-Replay-Service
 
 A simple REST (+web sockets) service to play (publish) a sequence of messages to a Kafka topic. The messages you can play are based on their location in a folder (following the convention over configuration principle). The folder is actively watched, and new files will be automatically available.
