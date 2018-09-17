@@ -11408,7 +11408,9 @@
         "vue-style-loader": "^4.1.0"
       }
     },
-    "vue-markdown": {},
+    "vue-markdown": {
+      "version": "2.2.4"
+    },
     "vue-property-decorator": {
       "version": "7.0.0",
       "resolved": "https://registry.npmjs.org/vue-property-decorator/-/vue-property-decorator-7.0.0.tgz",
