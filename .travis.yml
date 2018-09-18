@@ -2,7 +2,7 @@ language: node_js
 node_js:
 - '8'
 # sudo: required
-services:
+# services:
 # - docker
 if: branch IN (master, develop)
 # before_install:
@@ -13,10 +13,12 @@ if: branch IN (master, develop)
 before_install:
 - npm install -g yarn
 - yarn global add @vue/cli
+- cd ./packages/gui
 
 install:
 - npm install
 - npm run build
+
  
 script:
 - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
