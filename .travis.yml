@@ -8,8 +8,8 @@ if: branch IN (master, develop)
 before_install:
   - npm install -g pnpm
 install:
-  - cd /packages/gui && pnpm install
-  - cd /packages/service && pnpm install
+  - cd ./packages/gui && pnpm install
+  - cd ./packages/service && pnpm install
 script:
 - echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
 - docker build -t drivereu/kafka-replay-service:$TRAVIS_BRANCH-latest .
