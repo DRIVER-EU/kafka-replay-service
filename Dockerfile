@@ -46,4 +46,4 @@ COPY --from=builder ./packages/service/schemas /app/schemas
 COPY --from=builder ./packages/service/swagger.json /app
 COPY --from=builder ./packages/service/swagger.json /app/dist
 WORKDIR /app
-CMD ["node index.js"]
+CMD ["node dist/index.js"]
