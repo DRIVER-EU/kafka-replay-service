@@ -2,10 +2,10 @@
   "name": "kafka-replay-service",
   "version": "0.1.0",
   "devDependencies": {
-    "lerna": "^3.3.2"
+    "lerna": "^3.4.0"
   },
   "scripts": {
-    "postinstall": "lerna bootstrap && lerna run link",
+    "postinstall": "lerna bootstrap",
     "dev": "lerna run --parallel dev",
     "build": "lerna run build",
     "clean": "lerna run --parallel clean",
