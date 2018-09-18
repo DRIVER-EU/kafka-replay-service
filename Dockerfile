@@ -4,8 +4,8 @@ RUN npm i -g yarn
 # RUN mkdir -p /src
 # COPY . /src/
 # WORKDIR /src/packages/gui
-RUN yarn
-RUN yarn build
+RUN npm install
+RUN npm run build
 # WORKDIR /src/packages/service
 # RUN pnpm i --force && npm run build
 
