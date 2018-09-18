@@ -26,6 +26,7 @@
     "@types/geojson": "^7946.0.4",
     "@vue/cli-plugin-babel": "^3.0.3",
     "@vue/cli-plugin-typescript": "^3.0.3",
+    "@vue/component-compiler-utils": "^2.2.0",
     "@vue/cli-service": "^3.0.3",
     "typescript": "^3.0.3",
     "vue-template-compiler": "^2.5.17"
