@@ -1,9 +1,9 @@
 language: node_js
 node_js:
 - '8'
-# sudo: required
-# services:
-# - docker
+sudo: required
+services:
+- docker
 if: branch IN (master, develop)
 # before_install:
 #   - npm install -g pnpm
