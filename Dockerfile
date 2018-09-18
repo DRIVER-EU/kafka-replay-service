@@ -1,12 +1,13 @@
 FROM node:alpine AS builder
-RUN npm i -g pnpm
+# RUN npm i -g pnpm
 RUN npm i -g yarn
-RUN mkdir -p /src
-COPY . /src/
-WORKDIR /src/packages/gui
-RUN yarn && yarn build
-WORKDIR /src/packages/service
-RUN pnpm i --force && npm run build
+# RUN mkdir -p /src
+# COPY . /src/
+# WORKDIR /src/packages/gui
+RUN yarn
+RUN yarn build
+# WORKDIR /src/packages/service
+# RUN pnpm i --force && npm run build
 
 FROM node:alpine
 RUN mkdir -p /app
