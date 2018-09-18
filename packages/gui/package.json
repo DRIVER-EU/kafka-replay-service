@@ -19,7 +19,8 @@
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.1",
     "vue-markdown": "^2.2.4",
-    "vuetify": "^1.2.3"
+    "vuetify": "^1.2.3",
+    "markdown-it": "^8.4.2"
   },
   "devDependencies": {
     "@csnext/vue-cli-plugin-cs": "^0.0.63",
