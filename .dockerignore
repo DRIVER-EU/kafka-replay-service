@@ -2,4 +2,6 @@ out
 logs
 img
 node_modules
+packages/service/node_modules
+packages/gui/node_modules
 .vscode
