@@ -5,8 +5,8 @@ sudo: required
 services:
 - docker
 if: branch IN (master, develop)
-install:
-- npm install
+# install:
+# - npm install
 script:
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 - docker build -t drivereu/kafka-replay-service:$TRAVIS_BRANCH-latest .
