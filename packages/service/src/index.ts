@@ -11,6 +11,7 @@ export interface ICommandOptions {
   logFolder: string;
   port: number;
   help?: boolean;
+  version?: boolean;
 }
 
 export interface IOptionDefinition extends OptionDefinition {
@@ -26,6 +27,13 @@ export class CommandLineInterface {
       type: Boolean,
       typeLabel: '{underline Boolean}',
       description: 'Show help text',
+    },
+    {
+      name: 'version',
+      alias: 'v',
+      type: Boolean,
+      typeLabel: '{underline Boolean}',
+      description: 'Show version number',
     },
     {
       name: 'port',
@@ -119,11 +127,15 @@ export class CommandLineInterface {
 
 const options = commandLineArgs(CommandLineInterface.optionDefinitions) as ICommandOptions;
 
+const log = console.log;
+if (options.version) {
+  log(`Kafka-replay-service version ${npmPackage.version}.`);
+  process.exit(0);
+}
 if (options.help) {
   // tslint:disable-next-line:no-var-requires
   const getUsage = require('command-line-usage');
   const usage = getUsage(CommandLineInterface.sections);
-  const log = console.log;
   log(usage);
   process.exit(0);
 }
