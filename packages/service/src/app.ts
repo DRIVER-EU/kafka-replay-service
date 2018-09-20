@@ -1,3 +1,4 @@
+import * as path from 'path';
 import * as express from 'express';
 import * as socketIO from 'socket.io';
 import * as cors from 'cors';
@@ -25,7 +26,7 @@ export class App {
     this.port = options.port;
     this.app = express();
     this.app.use(cors());
-    this.app.use(express.static('public'));
+    this.app.use(express.static(path.resolve(__dirname, '../public')));
     this.server = createServer(this.app);
     this.io = socketIO(this.server);
     this.playerService = new PlayerService(options);
@@ -34,8 +35,8 @@ export class App {
         return;
       }
       this.started = true;
-      this.fws.on('updated', () => this.io.emit('session_update', this.fws.getAllSessions()));
       this.playerService.connect();
+      this.fws.on('updated', () => this.io.emit('session_update', this.fws.getAllSessions()));
       // log(this.fws.getAllSessions().map((s) => s.filename));
       // const f = this.fws.getAllSessions()[0].filename;
       // log(this.fws.getMessage(f));
