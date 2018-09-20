@@ -4,6 +4,7 @@
 data
 src
 logs
+logs.old
 schemas
 node_modules
 package-lock.json
