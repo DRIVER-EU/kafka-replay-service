@@ -8,8 +8,7 @@ const log = console.log.bind(console);
 
 // tslint:disable-next-line:interface-name
 export interface FileWatcherService {
-  on(event: 'ready', listener: () => void): this;
-  on(event: 'updated', listener: () => void): this;
+  on(event: 'ready' | 'updated', listener: () => void): this;
 }
 
 export class FileWatcherService extends EventEmitter {
@@ -37,13 +36,18 @@ export class FileWatcherService extends EventEmitter {
     const watcher = chokidar.watch(path.join(folder, '**/*'), {
       cwd: this.cwd,
       ignored: /(^|[\/\\])\../,
-      persistent: true
+      persistent: true,
     });
 
     watcher
       .on('add', (p: string) => this.addFile(path.join(this.cwd, p)))
-      .on('unlink', (p: string) => this.deleteFileOrFolder(path.join(this.cwd, p)))
-      .on('unlinkDir', (p: string) => this.deleteFileOrFolder(path.join(this.cwd, p)))
+      .on('unlink', (p: string) =>
+        this.deleteFileOrFolder(path.join(this.cwd, p))
+      )
+      .on('unlinkDir', (p: string) =>
+        this.deleteFileOrFolder(path.join(this.cwd, p))
+      )
+      // tslint:disable-next-line:no-console
       .on('error', (error: string) => console.error(`Watcher error: ${error}`))
       .on('ready', () => this.ready());
   }
@@ -79,7 +83,10 @@ export class FileWatcherService extends EventEmitter {
   public getAllSessions() {
     return Object.keys(this.store)
       .map((key) => this.store[key])
-      .reduce((p, c) => (p.indexOf(c.session) < 0 ? [ ...p, c.session ] : p), [] as string[]);
+      .reduce(
+        (p, c) => (p.indexOf(c.session) < 0 ? [...p, c.session] : p),
+        [] as string[]
+      );
   }
 
   /**
@@ -88,7 +95,11 @@ export class FileWatcherService extends EventEmitter {
   public getTopicsInSession(session: string) {
     return Object.keys(this.store)
       .map((key) => this.store[key])
-      .reduce((p, c) => (c.session === session && p.indexOf(c.topic) < 0 ? [ ...p, c.topic ] : p), [] as string[]);
+      .reduce(
+        (p, c) =>
+          c.session === session && p.indexOf(c.topic) < 0 ? [...p, c.topic] : p,
+        [] as string[]
+      );
   }
 
   /**
@@ -113,7 +124,7 @@ export class FileWatcherService extends EventEmitter {
       session: m.session,
       timestampMsec: m.timestampMsec,
       value: m.value,
-      key: m.key
+      key: m.key,
     };
   }
 
@@ -164,11 +175,18 @@ export class FileWatcherService extends EventEmitter {
       } else {
         const data: ILogMessage[] = JSON.parse(content);
         if (!(data instanceof Array)) {
-          return console.error(`Error reading log file ${filename}: data is not an array.`);
+          return console.error(
+            `Error reading log file ${filename}: data is not an array.`
+          );
         }
-        const session = path.dirname(filename).split(path.sep).pop();
+        const session = path
+          .dirname(filename)
+          .split(path.sep)
+          .pop();
         if (!session) {
-          return console.error('addMessagesFromLogFile - error reading session.');
+          return console.error(
+            'addMessagesFromLogFile - error reading session.'
+          );
         }
         const extractLabel = (m: ILogMessage) => {
           const senderID = (m.key && m.key.senderID) || '?';
@@ -177,7 +195,8 @@ export class FileWatcherService extends EventEmitter {
             : senderID;
         };
         const minTime = data.reduce(
-          (p, c) => (c.key && c.key.dateTimeSent ? Math.min(p, c.key.dateTimeSent) : p),
+          (p, c) =>
+            c.key && c.key.dateTimeSent ? Math.min(p, c.key.dateTimeSent) : p,
           Number.MAX_SAFE_INTEGER
         );
         data
@@ -191,7 +210,9 @@ export class FileWatcherService extends EventEmitter {
               msg.value = m.value;
               msg.label = extractLabel(m);
               // Convert the timestamp to a relative time
-              msg.timestampMsec = m.key.dateTimeSent ? Math.max(0, m.key.dateTimeSent - minTime) : 0;
+              msg.timestampMsec = m.key.dateTimeSent
+                ? Math.max(0, m.key.dateTimeSent - minTime)
+                : 0;
             }
             return msg;
           })
@@ -212,7 +233,9 @@ export class FileWatcherService extends EventEmitter {
    * @param filename Path to the file
    */
   private isLogFile(filename: string) {
-    return path.normalize(path.dirname(path.dirname(filename))) === this.watchFolder;
+    return (
+      path.normalize(path.dirname(path.dirname(filename))) === this.watchFolder
+    );
   }
 
   /**
