@@ -1,4 +1,3 @@
-import { Configuration } from "./../../datasources/configuration";
 import {
   SessionsApi,
   SessionName,
@@ -6,12 +5,11 @@ import {
   Message,
   MessagesApi
 } from "./../../datasources/swagger";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import { AppState, WidgetBase } from "@csnext/cs-client";
 import VueJsonPretty from "vue-json-pretty";
 import "./replay.css";
 import { INotification } from "@csnext/cs-core";
-import { format } from "url";
 
 @Component({
   template: require("./replay.html"),
