@@ -64,7 +64,7 @@ export class PlayerService extends EventEmitter {
       if (messageQueue.length === 0) {
         return;
       }
-      const curTime = this.adapter.simTime.valueOf();
+      const curTime = this.adapter.trialTime.valueOf();
       while (messageQueue.length > 0) {
         const m = messageQueue.shift() as ILogMessage;
         eventQueue.push({ timestamp: curTime + m.timestampMsec, message: m });
@@ -72,7 +72,7 @@ export class PlayerService extends EventEmitter {
     };
 
     const activeMessages = () => {
-      const curTime = this.adapter.simTime.valueOf();
+      const curTime = this.adapter.trialTime.valueOf();
       const outbox = {} as { [topic: string]: ILogMessage[] };
       if (eventQueue.length === 0) {
         return undefined;
