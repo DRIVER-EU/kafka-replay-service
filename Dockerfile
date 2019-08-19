@@ -1,7 +1,7 @@
 FROM node:8 AS builder
 COPY . .
 RUN npm i -g add @vue/cli
-RUN npm
+RUN npm i
 RUN npm run build
 
 FROM node:8
