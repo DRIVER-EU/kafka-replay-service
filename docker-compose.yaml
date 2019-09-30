@@ -1,0 +1,121 @@
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper
+    ports:
+      - '3500:3500'
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 3500
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:latest
+    hostname: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - '3501:3501'
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:3500'
+      KAFKA_ADVERTISED_LISTENERS: 'EXTERNAL://localhost:3501,PLAINTEXT://broker:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT'
+      KAFKA_LISTENERS: 'EXTERNAL://0.0.0.0:3501,PLAINTEXT://0.0.0.0:9092'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+      KAFKA_MESSAGE_MAX_BYTES: 100000000
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 100000000
+
+  schema_registry:
+    image: confluentinc/cp-schema-registry:latest
+    hostname: schema_registry
+    depends_on:
+      - zookeeper
+      - broker
+    ports:
+      - '3502:3502'
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema_registry
+      SCHEMA_REGISTRY_LISTENERS: 'http://0.0.0.0:3502'
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:3500'
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'PLAINTEXT://broker:9092'
+
+  kafka_rest:
+    image: confluentinc/cp-kafka-rest:latest
+    hostname: kafka_rest
+    depends_on:
+      - zookeeper
+      - schema_registry
+      - broker
+    ports:
+      - '8082:8082'
+    environment:
+      KAFKA_REST_HOST_NAME: kafka_rest
+      KAFKA_REST_BOOTSTRAP_SERVERS: 'PLAINTEXT://broker:9092'
+      KAFKA_REST_ZOOKEEPER_CONNECT: 'zookeeper:3500'
+      KAFKA_REST_LISTENERS: 'http://0.0.0.0:8082'
+      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema_registry:3502'
+      KAFKA_CONSUMER_REQUEST_TIMEOUT_MS: 30000
+      KAFKA_REST_ACCESS_CONTROL_ALLOW_METHODS: 'GET,POST,PUT,DELETE,OPTIONS'
+      KAFKA_REST_ACCESS_CONTROL_ALLOW_ORIGIN: '*'
+
+  kafka_topics_ui:
+    image: landoop/kafka-topics-ui:latest
+    hostname: kafka_topics_ui
+    depends_on:
+      - kafka_rest
+    ports:
+      - '3600:8000'
+    environment:
+      KAFKA_REST_PROXY_URL: 'http://kafka_rest:8082'
+      PROXY: 'true'
+
+  kafka_schema_registry_ui:
+    image: landoop/schema-registry-ui:latest
+    hostname: kafka_schema_registry_ui
+    depends_on:
+      - schema_registry
+    ports:
+      - '3601:8000'
+    environment:
+      SCHEMAREGISTRY_URL: 'http://schema_registry:3502'
+      PROXY: 'true'
+  silent-producer:
+    image: drivereu/silent-producer:0.0.1
+    depends_on:
+      - broker
+      - schema_registry
+    environment:
+      KAFKA_HOST: broker:9092
+      SCHEMA_REGISTRY: http://schema_registry:3502
+      PRODUCE_TOPICS: simulation_request_unittransport,simulation_request_startinject,simulation_entity_item,standard_cap,system_timing,system_topic_access_invite,system_logging
+    restart: on-failure
+
+  replay:
+    container_name: kafka-replay-service
+    image: kafka-replay-service
+    hostname: kafka-replay-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+          VUE_APP_PATH: http://127.0.0.1:8209/api/v1
+    volumes:
+      - ./logs:/app/logs
+#      - ./schemas:/app/schemas
+    ports:
+      # website
+      - "8080:8080"
+      # web socket communication
+      - "8081:8082"
+      # API rest calls
+      - "8209:8209"
+    depends_on:
+      - broker
+      - schema_registry
+      - silent-producer
+    environment:
+      KAFKA_BROKER_URL: broker:9092
+      SCHEMA_REGISTRY_URL: schema_registry:3502
+      API_REST_PORT: 8209

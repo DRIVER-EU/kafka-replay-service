@@ -11,6 +11,7 @@ export class PlayerService extends EventEmitter {
 
   constructor(options: ICommandOptions) {
     super();
+	console.log(`Setup adapter: kafka host: ${options.kafkaHost} registry ${options.schemaRegistry} schema folder ${options.schemaFolder} `);
     this.adapter = new TestBedAdapter({
       kafkaHost: options.kafkaHost,
       schemaRegistry: options.schemaRegistry,
@@ -40,6 +41,7 @@ export class PlayerService extends EventEmitter {
   }
 
   public connect() {
+	console.log(`Connect to kafka`);
     this.adapter.connect();
   }
 
