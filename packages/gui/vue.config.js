@@ -6,7 +6,7 @@ module.exports = {
         {
           test: /\.html$/,
           loader: "raw-loader",
-          exclude: ["./public/index.html"]
+          exclude: ["/public/index.html"]
         }
       ]
     }
