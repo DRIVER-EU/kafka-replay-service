@@ -81,6 +81,7 @@ services:
     environment:
       SCHEMAREGISTRY_URL: 'http://schema_registry:3502'
       PROXY: 'true'
+      
   silent-producer:
     image: drivereu/silent-producer:0.0.1
     depends_on:
@@ -103,7 +104,7 @@ services:
           VUE_APP_PATH: http://127.0.0.1:8209/api/v1
     volumes:
       - ./logs:/app/logs
-#      - ./schemas:/app/schemas
+      - ./schemas:/app/schemas
     ports:
       # website
       - "8080:8080"
