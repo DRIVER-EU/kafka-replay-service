@@ -1,4 +1,4 @@
-import { ILogMessage, messageQueue, commandQueue, resetCommand } from './models/message';
+import { ILogMessage, ILogEntry, messageQueue, commandQueue, resetCommand } from './models/message';
 import { ICommandOptions } from './index';
 import { EventEmitter } from 'events';
 import { ProduceRequest } from 'kafka-node';
@@ -11,7 +11,7 @@ export class PlayerService extends EventEmitter {
 
   constructor(options: ICommandOptions) {
     super();
-	console.log(`Setup adapter: kafka host: ${options.kafkaHost} registry ${options.schemaRegistry} schema folder ${options.schemaFolder} `);
+	  console.log(`Setup adapter: kafka host: ${options.kafkaHost} registry ${options.schemaRegistry} schema folder ${options.schemaFolder} `);
     this.adapter = new TestBedAdapter({
       kafkaHost: options.kafkaHost,
       schemaRegistry: options.schemaRegistry,
@@ -35,13 +35,13 @@ export class PlayerService extends EventEmitter {
     });
     this.adapter.on('error', (e) => {
       // tslint:disable-next-line:no-console
-      console.error(e);
+      console.error('Fatal error, service stopped: ' + e);
       process.exit(1);
     });
   }
 
   public connect() {
-	console.log(`Connect to kafka`);
+	  console.log(`Connect to kafka`);
     this.adapter.connect();
   }
 
@@ -99,21 +99,30 @@ export class PlayerService extends EventEmitter {
       if (!outbox) {
         return;
       }
-      Object.keys(outbox)
+      const logMessages: ILogMessage[] = Object.keys(outbox)
         .map((topic) => outbox[topic])
-        .map((messages) =>
-          messages.map(
-            (m) => ({ topic: m.topic, messages: m.value, key: m.key, partion: m.partition } as ProduceRequest)
-          )
-        )
-        .forEach((pr) =>
+        .reduce((acc, it) => [...acc, ...it]);
+      const kafkaMessages: any[] = 
+        logMessages.map((logEntry) => logEntry.value)
+        .reduce((acc, it) => [...acc, ...it]);
+
+       const kafkaProduceRequest: ProduceRequest[] = 
+       kafkaMessages
+           .map((entry) => { return  <ProduceRequest> { 
+             topic: entry.topic, 
+             messages: entry.value, 
+             key: entry.key, 
+             partion: entry.partition } });
+
+             kafkaProduceRequest.forEach((pr) => {
           this.adapter.send(pr, (error, data) => {
             if (error) {
               log.error(`startEventLoop - send: Error sending message: ${error}!`);
             } else {
               log.debug(`startEventLoop - send:\n` + JSON.stringify(data, null, 2));
             }
-          })
+          });
+        }
         );
     };
 

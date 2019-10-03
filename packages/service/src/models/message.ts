@@ -37,7 +37,16 @@ export interface ILogMessage {
   partition?: number;
   offset?: number;
   key?: IDefaultKey;
-  value?: IJsonObject | IJsonObject[];
+  value?: IJsonObject | IJsonObject[] | any;
+}
+
+export interface ILogEntry {
+  topic: string;
+  partition?: number;
+  offset?: number;
+  highWaterOffset?: number;
+  key?: IDefaultKey;
+  value: IJsonObject;
 }
 
 /**
