@@ -15,13 +15,14 @@ export class FileWatcherService extends EventEmitter {
   private static instance: FileWatcherService;
 
   private cwd = process.cwd();
-  private watchFolder?: string;
+  private watchFolder: string;
   private store: { [id: string]: Message } = {};
   private status: 'ready' | 'processing' | 'idle' = 'idle';
   private counter = 0;
 
   private constructor() {
     super();
+	this.watchFolder = process.cwd();
   }
 
   public static get Instance() {
@@ -33,23 +34,33 @@ export class FileWatcherService extends EventEmitter {
 
   public setWatchFolder(folder: string) {
     this.watchFolder = path.normalize(path.join(this.cwd, folder));
-    const watcher = chokidar.watch(path.join(folder, '**/*'), {
-      cwd: this.cwd,
-      ignored: /(^|[\/\\])\../,
+    log(`Watching folder '${this.watchFolder}'. `)
+    const watcher = chokidar.watch('**/*', {
+      cwd: this.watchFolder,
+      ignored: /(^|[\/\\])\../, // ignore dotfiles
       persistent: true,
+	  usePolling: true, // Polling is needed for using docker volumes monitoring
+    awaitWriteFinish: {
+        pollInterval: 100,
+        stabilityThreshold: 250
+    },
     });
 
     watcher
-      .on('add', (p: string) => this.addFile(path.join(this.cwd, p)))
+      .on('add', (p: string) => this.addFile(path.join(this.watchFolder, p)))
       .on('unlink', (p: string) =>
-        this.deleteFileOrFolder(path.join(this.cwd, p))
+        this.deleteFileOrFolder(path.join(this.watchFolder, p))
       )
       .on('unlinkDir', (p: string) =>
-        this.deleteFileOrFolder(path.join(this.cwd, p))
+        this.deleteFileOrFolder(path.join(this.watchFolder, p))
       )
       // tslint:disable-next-line:no-console
       .on('error', (error: string) => console.error(`Watcher error: ${error}`))
       .on('ready', () => this.ready());
+	  //.on('raw', function(event, path, details) {
+           // This event should be triggered everytime something happens.
+      //     console.log('Raw event info:', event, path, details);
+      //});
   }
 
   /**

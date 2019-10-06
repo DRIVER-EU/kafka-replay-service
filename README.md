@@ -89,3 +89,13 @@ npm start
 ## Development instructions
 
 In order to develop the app, use `npm run dev`.
+
+## Docker
+
+The batch file 'CreateDockerImages.bat' will generate a local docker image 'kafka-replay-service'.
+
+To start the kafka-replayer-service execute 'docker-compose up -d' and open a browser with 'http://localhost:8080'
+
+The docker-compose will start also the KAFKA containers.
+
+View topics in browser: http://localhost:3601

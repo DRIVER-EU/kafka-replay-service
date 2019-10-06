@@ -94,6 +94,7 @@ services:
     restart: on-failure
 
   replay:
+    # The service and web application are hosted in the same docker container
     container_name: kafka-replay-service
     image: kafka-replay-service
     hostname: kafka-replay-service
@@ -101,17 +102,15 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-          VUE_APP_PATH: http://127.0.0.1:8209/api/v1
+          VUE_APP_PATH: http://127.0.0.1:${SERVER_API_REST_PORT}/api/v1
     volumes:
-      - ./logs:/app/logs
-      - ./schemas:/app/schemas
+     - ./logs:/app/logs
+     - ./schemas:/app/schemas
     ports:
       # website
-      - "8080:8080"
-      # web socket communication
-      - "8081:8082"
+      - ${WEB_SERVER_APP_PORT}:8080
       # API rest calls
-      - "8209:8209"
+      - ${SERVER_API_REST_PORT}:8209
     depends_on:
       - broker
       - schema_registry
