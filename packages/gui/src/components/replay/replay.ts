@@ -37,6 +37,7 @@ export default class Replay extends WidgetBase {
   };
 
   created() {
+	  console.log(`REST API URL ${process.env.VUE_APP_PATH}`);
     this.sessionsApi.sessionsGet().then(sessions => {
       Vue.set(this, "sessions", sessions);
     });

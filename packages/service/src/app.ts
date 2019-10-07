@@ -23,11 +23,13 @@ export class App {
   private playerService: PlayerService;
 
   constructor(options: ICommandOptions) {
+	log(`Web server listening port from config: port ${options.port}.`);
     this.port = options.port;
     this.app = express();
     this.app.use(cors());
     this.app.use(express.static(path.resolve(__dirname, '../public')));
     this.server = createServer(this.app);
+	log(`Created web socket server`);
     this.io = socketIO(this.server);
     this.playerService = new PlayerService(options);
     this.fws.on('ready', () => {
@@ -52,7 +54,7 @@ export class App {
 
   private listen(): void {
     this.server.listen(this.port, () => {
-      log(`Running server on port ${this.port}.`);
+      log(`Running API REST server on port ${this.port}.`);
     });
 
     this.io.on('connect', (socket: SocketIO.Socket) => {

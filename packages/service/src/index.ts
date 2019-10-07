@@ -41,7 +41,7 @@ export class CommandLineInterface {
       type: Number,
       defaultValue: 8200,
       typeLabel: '{underline Number}',
-      description: 'Endpoint port, e.g. http://localhost:PORT/time',
+      description: 'Web server listening port',
     },
     {
       name: 'kafkaHost',
