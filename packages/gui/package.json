@@ -28,7 +28,7 @@
     "@vue/cli-plugin-babel": "^3.0.3",
     "@vue/cli-plugin-typescript": "^3.0.3",
     "@vue/component-compiler-utils": "^2.2.0",
-    "@vue/cli-service": "^3.0.3",
+    "@vue/cli-service": "^5.0.8",
     "typescript": "^3.0.3",
     "vue-template-compiler": "^2.5.17"
   },
